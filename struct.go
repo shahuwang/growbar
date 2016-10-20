@@ -101,3 +101,33 @@ type IdentifierList struct {
 type GlobalStatement struct {
 	identifier_list *IdentifierList
 }
+
+type Variable struct {
+	name  string
+	value Value
+	next  *Variable
+}
+
+type FunctionDefinitionType int
+
+const (
+	CROWBAR_FUNCTION_DEFINITION FunctionDefinitionType = iota + 1
+	NATIVE_FUNCTION_DEFINITION
+)
+
+type FunctionDefinition struct {
+	name string
+	typ  FunctionDefinitionType
+	u    interface{}
+}
+
+type CrowbarFunc struct {
+	parameter *ParameterList
+	block     *Block
+}
+
+type NativeFunc struct {
+	proc *NativeFuncProc
+}
+
+type NativeFuncProc func(interpreter *Interpreter, arg_count int, args *Value) Value
