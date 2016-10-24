@@ -15,12 +15,15 @@ const (
 	CRB_NULL_VALUE
 )
 
-type Value struct {
-	typ ValueType
-	u   *ValueTag
+type NativePointerInfo struct {
+	name string
 }
 
-type ValueTag struct {
-	value reflect.Value
-	typ   reflect.Type
+type NativePointer struct {
+	info    *NativePointerInfo
+	pointer *interface{}
+}
+type Value struct {
+	typ ValueType
+	u   *interface{}
 }

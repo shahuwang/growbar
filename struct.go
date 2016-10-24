@@ -108,6 +108,12 @@ type Variable struct {
 	next  *Variable
 }
 
+type CRBString struct {
+	ref_count  int
+	str        string
+	is_literal bool
+}
+
 type FunctionDefinitionType int
 
 const (
