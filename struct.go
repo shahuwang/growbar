@@ -70,17 +70,27 @@ const (
 type Statement struct {
 	typ         StatementType
 	line_number int
-	u           *StatementTag
-}
-
-type StatementTag struct {
-	value reflect.Value
-	typ   reflect.Type
+	u           interface{}
 }
 
 type StatementList struct {
 	statement *Statement
 	next      *StatementList
+}
+
+type StatementResultType int
+
+const (
+	NORMAL_STATEMENT_RESULT StatementResultType = iota + 1
+	RETURN_STATEMENT_RESULT
+	BREAK_STATEMENT_RESULT
+	CONTINUE_STATEMENT_RESULT
+	STATEMENT_RESULT_TYPE_COUNT_PLUS_1
+)
+
+type StatementResult struct {
+	typ StatementResultType
+	u   interface{}
 }
 
 type Block struct {
@@ -112,6 +122,16 @@ type CRBString struct {
 	ref_count  int
 	str        string
 	is_literal bool
+}
+
+type GlobalaVariableRef struct {
+	variable *Variable
+	next     *GlobalaVariableRef
+}
+
+type LocalEnvironment struct {
+	variable        *Variable
+	global_variable GlobalaVariableRef
 }
 
 type FunctionDefinitionType int

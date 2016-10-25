@@ -1,7 +1,7 @@
 package main
 
 import (
-	"reflect"
+// "reflect"
 )
 
 type ValueType int
@@ -21,9 +21,9 @@ type NativePointerInfo struct {
 
 type NativePointer struct {
 	info    *NativePointerInfo
-	pointer *interface{}
+	pointer interface{}
 }
 type Value struct {
 	typ ValueType
-	u   *interface{}
+	u   interface{}
 }
