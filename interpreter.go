@@ -64,7 +64,10 @@ func (ipt *Interpreter) ExecuteStatementList(env *LocalEnvironment, stlist *Stat
 		if pos == nil {
 			break
 		}
-
+		result = ipt.ExecuteStatement(env, pos.statement)
+		if result.typ != NORMAL_STATEMENT_RESULT {
+			return result
+		}
 	}
 	return result
 }
@@ -99,10 +102,21 @@ func (ipt *Interpreter) ExecuteStatement(env *LocalEnvironment, statement *State
 }
 
 func (ipt *Interpreter) ExecuteExpressionStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	return StatementResult{}
+	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
+	v := ipt.EvalExpression(env, statement.u.(Expression))
+	if v.typ == CRB_STRING_VALUE {
+		// crb_release_string(v.u.string_value)
+		// 这里不知道是否需要垃圾回收
+	}
+	return result
 }
 
 func (ipt *Interpreter) ExecuteGlobalStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	var pos *IdentifierList
+	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
+	if env == nil {
+
+	}
 	return StatementResult{}
 }
 
@@ -115,17 +129,28 @@ func (ipt *Interpreter) ExecuteWhileStatement(env *LocalEnvironment, statement *
 }
 
 func (ipt *Interpreter) ExecuteForStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	return StatementResult{}
+	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
+	var cond Value
 }
 
 func (ipt *Interpreter) ExecuteReturnStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	return StatementResult{}
+	return StatementResult{typ: RETURN_STATEMENT_RESULT}
 }
 
 func (ipt *Interpreter) ExecuteContinueStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	return StatementResult{}
+	return StatementResult{typ: CONTINUE_STATEMENT_RESULT}
 }
 
 func (ipt *Interpreter) ExecuteBreakStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	return StatementResult{}
+	return StatementResult{typ: BREAK_STATEMENT_RESULT}
+}
+
+func (ipt *Interpreter) EvalExpression(env *LocalEnvironment, expr *Expression) Value {
+	return ipt.EvalExpression(env, expr)
+}
+
+func (ipt *Interpreter) evalExpression(env *LocalEnvironment, expr *Expression) Value {
+	//TODO
+	var v Value
+	return v
 }
