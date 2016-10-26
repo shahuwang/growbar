@@ -1,7 +1,7 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 	"os"
 )
 
@@ -66,6 +66,66 @@ func (ipt *Interpreter) ExecuteStatementList(env *LocalEnvironment, stlist *Stat
 		}
 
 	}
-FUNC_END:
 	return result
+}
+
+func (ipt *Interpreter) ExecuteStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	switch statement.typ {
+	case EXPRESSION_STATEMENT:
+		return ipt.ExecuteExpressionStatement(env, statement)
+	case GLOBAL_STATEMENT:
+		return ipt.ExecuteGlobalStatement(env, statement)
+	case IF_STATEMENT:
+		return ipt.ExecuteIfStatement(env, statement)
+	case WHILE_STATEMENT:
+		return ipt.ExecuteWhileStatement(env, statement)
+	case FOR_STATEMENT:
+		return ipt.ExecuteForStatement(env, statement)
+	case RETURN_STATEMENT:
+		return ipt.ExecuteReturnStatement(env, statement)
+	case BREAK_STATEMENT:
+		return ipt.ExecuteBreakStatement(env, statement)
+	case CONTINUE_STATEMENT:
+		return ipt.ExecuteContinueStatement(env, statement)
+	case STATEMENT_TYPE_COUNT_PLUS_1:
+		fallthrough
+	default:
+		errmsg, err := fmt.Printf("bad case ...%d", statement.typ)
+		if err != nil {
+			panic(err)
+		}
+		panic(errmsg)
+	}
+}
+
+func (ipt *Interpreter) ExecuteExpressionStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	return StatementResult{}
+}
+
+func (ipt *Interpreter) ExecuteGlobalStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	return StatementResult{}
+}
+
+func (ipt *Interpreter) ExecuteIfStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	return StatementResult{}
+}
+
+func (ipt *Interpreter) ExecuteWhileStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	return StatementResult{}
+}
+
+func (ipt *Interpreter) ExecuteForStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	return StatementResult{}
+}
+
+func (ipt *Interpreter) ExecuteReturnStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	return StatementResult{}
+}
+
+func (ipt *Interpreter) ExecuteContinueStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	return StatementResult{}
+}
+
+func (ipt *Interpreter) ExecuteBreakStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	return StatementResult{}
 }
