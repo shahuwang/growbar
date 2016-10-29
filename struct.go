@@ -37,6 +37,15 @@ type Expression struct {
 	line_number int
 }
 
+type CompileError int
+
+const (
+	PARSE_ERR = iota + 1
+	CHARACTER_INVALID_ERR
+	FUNCTION_MULTIPLE_DEFINE_ERR
+	COMPILE_ERROR_COUNT_PLUS_1
+)
+
 type ParameterList struct {
 	name string
 	next *ParameterList
@@ -77,6 +86,29 @@ type StatementList struct {
 	statement *Statement
 	next      *StatementList
 }
+
+type RuntimeError int
+
+const (
+	VARIABLE_NOT_FOUND_ERROR RuntimeError = iota + 1
+	FUNCTION_NOT__FOUNT_ERR
+	ARGUMENT_TOO_MANY_ERR
+	ARGUMENT_TOO_FEW_ERR
+	NOT_BOOLEAN_TYPE_ERR
+	MINUS_OPERAND_TYPE_ERR
+	BAD_OPERAND_TYPE_ERR
+	NOT_BOOLEAN_OPERATOR_ERR
+	FOPEN_ARGUMENT_TYPE_ERR
+	FCLOSE_ARGUMENT_TYPE_ERR
+	FGETS_ARGUMENT_TYPE_ERR
+	FPUTS_ARGUMENT_TYPE_ERR
+	NOT_NULL_OPERATOR_ERR
+	DIVISION_BY_ZERO_ERR
+	GLOBAL_VARIABLE_NOT_FOUND_ERR
+	GLOBAL_STATEMENT_IN_TOPLEVEL_ERR
+	BAD_OPERATOR_FOR_STRING_ERR
+	RUNTIME_ERROR_COUNT_PLUS_1
+)
 
 type StatementResultType int
 
@@ -145,6 +177,10 @@ type FunctionDefinition struct {
 	name string
 	typ  FunctionDefinitionType
 	u    interface{}
+}
+
+type MessageFormat struct {
+	format string
 }
 
 type CrowbarFunc struct {

@@ -103,11 +103,11 @@ func (ipt *Interpreter) ExecuteStatement(env *LocalEnvironment, statement *State
 
 func (ipt *Interpreter) ExecuteExpressionStatement(env *LocalEnvironment, statement *Statement) StatementResult {
 	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
-	v := ipt.EvalExpression(env, statement.u.(Expression))
-	if v.typ == CRB_STRING_VALUE {
-		// crb_release_string(v.u.string_value)
-		// 这里不知道是否需要垃圾回收
-	}
+	// v := ipt.EvalExpression(env, &statement.u.(Expression))
+	// if v.typ == CRB_STRING_VALUE {
+	// 	// crb_release_string(v.u.string_value)
+	// 	// 这里不知道是否需要垃圾回收
+	// }
 	return result
 }
 
@@ -115,9 +115,16 @@ func (ipt *Interpreter) ExecuteGlobalStatement(env *LocalEnvironment, statement 
 	var pos *IdentifierList
 	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
 	if env == nil {
+		runtimeError(statement.line_number, GLOBAL_STATEMENT_IN_TOPLEVEL_ERR)
+	}
+	pos = statement.u.(GlobalStatement).identifier_list
+	for {
+		if pos == nil {
+			break
+		}
 
 	}
-	return StatementResult{}
+	return result
 }
 
 func (ipt *Interpreter) ExecuteIfStatement(env *LocalEnvironment, statement *Statement) StatementResult {
@@ -130,7 +137,8 @@ func (ipt *Interpreter) ExecuteWhileStatement(env *LocalEnvironment, statement *
 
 func (ipt *Interpreter) ExecuteForStatement(env *LocalEnvironment, statement *Statement) StatementResult {
 	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
-	var cond Value
+	// var cond Value
+	return result
 }
 
 func (ipt *Interpreter) ExecuteReturnStatement(env *LocalEnvironment, statement *Statement) StatementResult {
