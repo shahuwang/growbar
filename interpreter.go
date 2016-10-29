@@ -15,6 +15,12 @@ type Interpreter struct {
 	lex                 *GrowLex
 }
 
+var INTER Interpreter
+
+func getCurrentInterpreter() Interpreter {
+	return INTER
+}
+
 func NewInterpreter() *Interpreter {
 	interpreter := new(Interpreter)
 	interpreter.current_line_number = 1

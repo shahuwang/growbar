@@ -59,15 +59,15 @@ func errorFormat(line_number int, format string, args ...interface{}) {
 }
 
 func runtimeError(line_number int, id RuntimeError, args ...interface{}) {
-	selfCheck{}
-	format := runtimeErrorMessageFormat[id]
+	selfCheck()
+	format := runtimeErrorMessageFormat[id].format
 	errorFormat(line_number, format, args)
 	os.Exit(1)
 }
 
 func compileError(line_number int, id CompileError, args ...interface{}) {
 	selfCheck()
-	format := compileErrorMessageFormat[id]
+	format := compileErrorMessageFormat[id].format
 	errorFormat(line_number, format, args)
 	os.Exit(1)
 }

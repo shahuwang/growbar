@@ -1,0 +1,82 @@
+
+state 0
+	$accept: .translation_unit $end 
+
+	ADD  shift 3
+	SUB  shift 4
+	MUL  shift 5
+	DIV  shift 6
+	MOD  shift 7
+	.  error
+
+	translation_unit  goto 1
+	additive  goto 2
+
+state 1
+	$accept:  translation_unit.$end 
+	translation_unit:  translation_unit.additive 
+
+	$end  accept
+	ADD  shift 3
+	SUB  shift 4
+	MUL  shift 5
+	DIV  shift 6
+	MOD  shift 7
+	.  error
+
+	additive  goto 8
+
+state 2
+	translation_unit:  additive.    (1)
+
+	.  reduce 1 (src line 15)
+
+
+state 3
+	additive:  ADD.    (3)
+
+	.  reduce 3 (src line 19)
+
+
+state 4
+	additive:  SUB.    (4)
+
+	.  reduce 4 (src line 24)
+
+
+state 5
+	additive:  MUL.    (5)
+
+	.  reduce 5 (src line 28)
+
+
+state 6
+	additive:  DIV.    (6)
+
+	.  reduce 6 (src line 32)
+
+
+state 7
+	additive:  MOD.    (7)
+
+	.  reduce 7 (src line 36)
+
+
+state 8
+	translation_unit:  translation_unit additive.    (2)
+
+	.  reduce 2 (src line 17)
+
+
+40 terminals, 3 nonterminals
+8 grammar rules, 9/2000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+52 working sets used
+memory: parser 2/30000
+0 extra closures
+10 shift entries, 1 exceptions
+3 goto entries
+0 entries saved by goto default
+Optimizer space used: output 8/30000
+8 table entries, 0 zero
+maximum spread: 37, maximum offset: 33
