@@ -2,6 +2,8 @@
 state 0
 	$accept: .translation_unit $end 
 
+	INT_LITERAL  shift 17
+	DOUBLE_LITERAL  shift 18
 	ASSIGN  shift 10
 	LOGICAL_AND  shift 8
 	LOGICAL_OR  shift 9
@@ -26,6 +28,8 @@ state 1
 	translation_unit:  translation_unit.additive 
 
 	$end  accept
+	INT_LITERAL  shift 17
+	DOUBLE_LITERAL  shift 18
 	ASSIGN  shift 10
 	LOGICAL_AND  shift 8
 	LOGICAL_OR  shift 9
@@ -42,7 +46,7 @@ state 1
 	MOD  shift 7
 	.  error
 
-	additive  goto 17
+	additive  goto 19
 
 state 2
 	translation_unit:  additive.    (1)
@@ -135,20 +139,32 @@ state 16
 
 
 state 17
+	additive:  INT_LITERAL.    (17)
+
+	.  reduce 17 (src line 79)
+
+
+state 18
+	additive:  DOUBLE_LITERAL.    (18)
+
+	.  reduce 18 (src line 83)
+
+
+state 19
 	translation_unit:  translation_unit additive.    (2)
 
 	.  reduce 2 (src line 20)
 
 
 40 terminals, 3 nonterminals
-17 grammar rules, 18/2000 states
+19 grammar rules, 20/2000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
 52 working sets used
 memory: parser 2/30000
 0 extra closures
-28 shift entries, 1 exceptions
+32 shift entries, 1 exceptions
 3 goto entries
 0 entries saved by goto default
-Optimizer space used: output 17/30000
-17 table entries, 0 zero
-maximum spread: 37, maximum offset: 24
+Optimizer space used: output 34/30000
+34 table entries, 15 zero
+maximum spread: 37, maximum offset: 4

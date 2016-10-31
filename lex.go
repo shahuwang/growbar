@@ -2,10 +2,11 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
+	"strings"
 	// "unicode"
-	"fmt"
 	"unicode/utf8"
 )
 
@@ -70,6 +71,21 @@ func (g *Growlex) Error(s string) {
 	panic(s)
 }
 
+func (g *Growlex) accept(valid string) bool {
+	if strings.IndexRune(valid, g.Next()) >= 0 {
+		return true
+	}
+	g.Back()
+	return false
+}
+
+func (g *Growlex) acceptRun(valid string) {
+	for strings.IndexRune(valid, g.Next()) >= 0 {
+
+	}
+	g.Back()
+}
+
 func (g *Growlex) Lex(lval *GrowSymType) int {
 	r := g.Peek()
 	switch {
@@ -126,6 +142,13 @@ func (g *Growlex) Lex(lval *GrowSymType) int {
 		if g.unixNewLine() == 0 {
 			return g.Lex(lval)
 		}
+	case r == ' ' || r == '\t':
+		g.Next()
+		return g.Lex(lval)
+	case r == '0' || r == '1' || r == '2' ||
+		r == '3' || r == '4' || r == '5' || r == '6' ||
+		r == '7' || r == '8' || r == '9':
+		return g.scanNumber()
 	}
 	return 0
 }
@@ -218,4 +241,33 @@ func (g *Growlex) unixNewLine() int {
 	ipt := getCurrentInterpreter()
 	ipt.current_line_number++
 	return 0
+}
+
+func (g *Growlex) scanNumber() int {
+	digits := "0123456789"
+	if g.accept("0") {
+		// 只能是0或者小数
+		if g.accept(".") {
+			if g.accept(digits) {
+				g.acceptRun(digits)
+				return DOUBLE_LITERAL
+			}
+			g.Back()
+			return INT_LITERAL
+		}
+		return INT_LITERAL
+	}
+	if g.accept(digits) {
+		g.acceptRun(digits)
+		if g.accept(".") {
+			if g.accept(digits) {
+				g.acceptRun(digits)
+				return DOUBLE_LITERAL
+			}
+			g.Back()
+			return INT_LITERAL
+		}
+		return INT_LITERAL
+	}
+	return -1
 }

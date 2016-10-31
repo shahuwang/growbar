@@ -76,4 +76,12 @@ additive
     {
         fmt.Println("is LE")
     }
+    | INT_LITERAL
+    {
+        fmt.Println($1)
+    }
+    | DOUBLE_LITERAL
+    {
+        fmt.Println($1)
+    }
 %%
