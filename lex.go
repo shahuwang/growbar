@@ -119,9 +119,13 @@ func (g *Growlex) Lex(lval *GrowSymType) int {
 		g.Next()
 		return MUL
 	case r == '\r':
-		return g.winNewLine()
+		if g.winNewLine() == 0 {
+			return g.Lex(lval)
+		}
 	case r == '\n':
-		return g.unixNewLine()
+		if g.unixNewLine() == 0 {
+			return g.Lex(lval)
+		}
 	}
 	return 0
 }
