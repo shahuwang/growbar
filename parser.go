@@ -4,7 +4,11 @@ package main
 import __yyfmt__ "fmt"
 
 //line growbar.y:3
-//line growbar.y:4
+import (
+	"fmt"
+)
+
+//line growbar.y:7
 type GrowSymType struct {
 	yys int
 }
@@ -95,7 +99,7 @@ const GrowEofCode = 1
 const GrowErrCode = 2
 const GrowInitialStackSize = 16
 
-//line growbar.y:40
+//line growbar.y:79
 //line yacctab:1
 var GrowExca = [...]int{
 	-1, 1,
@@ -103,41 +107,47 @@ var GrowExca = [...]int{
 	-2, 0,
 }
 
-const GrowNprod = 8
+const GrowNprod = 17
 const GrowPrivate = 57344
 
 var GrowTokenNames []string
 var GrowStates []string
 
-const GrowLast = 8
+const GrowLast = 17
 
 var GrowAct = [...]int{
 
-	3, 4, 5, 6, 7, 2, 1, 8,
+	10, 8, 9, 11, 12, 13, 14, 15, 16, 3,
+	4, 5, 6, 7, 2, 1, 17,
 }
 var GrowPact = [...]int{
 
-	-33, -33, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
+	-24, -24, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
+	-1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
 }
 var GrowPgo = [...]int{
 
-	0, 6, 5,
+	0, 15, 14,
 }
 var GrowR1 = [...]int{
 
-	0, 1, 1, 2, 2, 2, 2, 2,
+	0, 1, 1, 2, 2, 2, 2, 2, 2, 2,
+	2, 2, 2, 2, 2, 2, 2,
 }
 var GrowR2 = [...]int{
 
-	0, 1, 2, 1, 1, 1, 1, 1,
+	0, 1, 2, 1, 1, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 1, 1,
 }
 var GrowChk = [...]int{
 
-	-1000, -1, -2, 33, 34, 35, 36, 37, -2,
+	-1000, -1, -2, 33, 34, 35, 36, 37, 25, 26,
+	24, 27, 28, 29, 30, 31, 32, -2,
 }
 var GrowDef = [...]int{
 
-	0, -2, 1, 3, 4, 5, 6, 7, 2,
+	0, -2, 1, 3, 4, 5, 6, 7, 8, 9,
+	10, 11, 12, 13, 14, 15, 16, 2,
 }
 var GrowTok1 = [...]int{
 
@@ -493,33 +503,87 @@ Growdefault:
 
 	case 3:
 		GrowDollar = GrowS[Growpt-1 : Growpt+1]
-		//line growbar.y:21
+		//line growbar.y:24
 		{
 			fmt.Println("is ADD")
 		}
 	case 4:
 		GrowDollar = GrowS[Growpt-1 : Growpt+1]
-		//line growbar.y:25
+		//line growbar.y:28
 		{
 			fmt.Println("is SUB")
 		}
 	case 5:
 		GrowDollar = GrowS[Growpt-1 : Growpt+1]
-		//line growbar.y:29
+		//line growbar.y:32
 		{
 			fmt.Println("is MUL")
 		}
 	case 6:
 		GrowDollar = GrowS[Growpt-1 : Growpt+1]
-		//line growbar.y:33
+		//line growbar.y:36
 		{
 			fmt.Println("is DIV")
 		}
 	case 7:
 		GrowDollar = GrowS[Growpt-1 : Growpt+1]
-		//line growbar.y:37
+		//line growbar.y:40
 		{
 			fmt.Println("is MOD")
+		}
+	case 8:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:44
+		{
+			fmt.Println("is AND")
+		}
+	case 9:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:48
+		{
+			fmt.Println("is OR")
+		}
+	case 10:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:52
+		{
+			fmt.Println("is ASSIGN")
+		}
+	case 11:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:56
+		{
+			fmt.Println("is EQ")
+		}
+	case 12:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:60
+		{
+			fmt.Println("is NE")
+		}
+	case 13:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:64
+		{
+			fmt.Println("is GT")
+		}
+	case 14:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:68
+		{
+			fmt.Println("is GE")
+		}
+	case 15:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:72
+		{
+			fmt.Println("is LT")
+		}
+	case 16:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:76
+		{
+			fmt.Println("is LE")
 		}
 	}
 	goto Growstack /* stack new state and value */

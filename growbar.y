@@ -1,5 +1,8 @@
 %{
 package main
+import(
+  "fmt"
+)
 %}
 %union {
 }
@@ -36,5 +39,41 @@ additive
     | MOD
     {
         fmt.Println("is MOD")
+    }
+    | LOGICAL_AND
+    {
+        fmt.Println("is AND")
+    }
+    | LOGICAL_OR
+    {
+        fmt.Println("is OR")
+    }
+    | ASSIGN
+    {
+        fmt.Println("is ASSIGN")
+    }
+    | EQ
+    {
+        fmt.Println("is EQ")
+    }
+    | NE
+    {
+        fmt.Println("is NE")
+    }
+    | GT
+    {
+        fmt.Println("is GT")
+    }
+    | GE
+    {
+        fmt.Println("is GE")
+    }
+    | LT
+    {
+        fmt.Println("is LT")
+    }
+    | LE
+    {
+        fmt.Println("is LE")
     }
 %%

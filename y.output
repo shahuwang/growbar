@@ -2,6 +2,15 @@
 state 0
 	$accept: .translation_unit $end 
 
+	ASSIGN  shift 10
+	LOGICAL_AND  shift 8
+	LOGICAL_OR  shift 9
+	EQ  shift 11
+	NE  shift 12
+	GT  shift 13
+	GE  shift 14
+	LT  shift 15
+	LE  shift 16
 	ADD  shift 3
 	SUB  shift 4
 	MUL  shift 5
@@ -17,6 +26,15 @@ state 1
 	translation_unit:  translation_unit.additive 
 
 	$end  accept
+	ASSIGN  shift 10
+	LOGICAL_AND  shift 8
+	LOGICAL_OR  shift 9
+	EQ  shift 11
+	NE  shift 12
+	GT  shift 13
+	GE  shift 14
+	LT  shift 15
+	LE  shift 16
 	ADD  shift 3
 	SUB  shift 4
 	MUL  shift 5
@@ -24,59 +42,113 @@ state 1
 	MOD  shift 7
 	.  error
 
-	additive  goto 8
+	additive  goto 17
 
 state 2
 	translation_unit:  additive.    (1)
 
-	.  reduce 1 (src line 15)
+	.  reduce 1 (src line 18)
 
 
 state 3
 	additive:  ADD.    (3)
 
-	.  reduce 3 (src line 19)
+	.  reduce 3 (src line 22)
 
 
 state 4
 	additive:  SUB.    (4)
 
-	.  reduce 4 (src line 24)
+	.  reduce 4 (src line 27)
 
 
 state 5
 	additive:  MUL.    (5)
 
-	.  reduce 5 (src line 28)
+	.  reduce 5 (src line 31)
 
 
 state 6
 	additive:  DIV.    (6)
 
-	.  reduce 6 (src line 32)
+	.  reduce 6 (src line 35)
 
 
 state 7
 	additive:  MOD.    (7)
 
-	.  reduce 7 (src line 36)
+	.  reduce 7 (src line 39)
 
 
 state 8
+	additive:  LOGICAL_AND.    (8)
+
+	.  reduce 8 (src line 43)
+
+
+state 9
+	additive:  LOGICAL_OR.    (9)
+
+	.  reduce 9 (src line 47)
+
+
+state 10
+	additive:  ASSIGN.    (10)
+
+	.  reduce 10 (src line 51)
+
+
+state 11
+	additive:  EQ.    (11)
+
+	.  reduce 11 (src line 55)
+
+
+state 12
+	additive:  NE.    (12)
+
+	.  reduce 12 (src line 59)
+
+
+state 13
+	additive:  GT.    (13)
+
+	.  reduce 13 (src line 63)
+
+
+state 14
+	additive:  GE.    (14)
+
+	.  reduce 14 (src line 67)
+
+
+state 15
+	additive:  LT.    (15)
+
+	.  reduce 15 (src line 71)
+
+
+state 16
+	additive:  LE.    (16)
+
+	.  reduce 16 (src line 75)
+
+
+state 17
 	translation_unit:  translation_unit additive.    (2)
 
-	.  reduce 2 (src line 17)
+	.  reduce 2 (src line 20)
 
 
 40 terminals, 3 nonterminals
-8 grammar rules, 9/2000 states
+17 grammar rules, 18/2000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
 52 working sets used
 memory: parser 2/30000
 0 extra closures
-10 shift entries, 1 exceptions
+28 shift entries, 1 exceptions
 3 goto entries
 0 entries saved by goto default
-Optimizer space used: output 8/30000
-8 table entries, 0 zero
-maximum spread: 37, maximum offset: 33
+Optimizer space used: output 17/30000
+17 table entries, 0 zero
+maximum spread: 37, maximum offset: 24

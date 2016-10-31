@@ -5,7 +5,7 @@ import (
 )
 
 func TestReflect(t *testing.T) {
-	v := new(CRBValue)
+	v := new(Value)
 	pinfo := NativePointerInfo{name: "hello"}
 	pointer := NativePointer{info: &pinfo}
 	v.u = pointer
@@ -13,4 +13,8 @@ func TestReflect(t *testing.T) {
 	if ok {
 		p.pointer = 12
 	}
+}
+
+func TestParser(t *testing.T) {
+
 }

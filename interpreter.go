@@ -12,12 +12,12 @@ type Interpreter struct {
 	function_list       *FunctionDefinition
 	statement_list      *StatementList
 	current_line_number int
-	lex                 *GrowLex
+	lex                 *Growlex
 }
 
-var INTER Interpreter
+var INTER *Interpreter = NewInterpreter()
 
-func getCurrentInterpreter() Interpreter {
+func getCurrentInterpreter() *Interpreter {
 	return INTER
 }
 
