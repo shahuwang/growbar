@@ -84,4 +84,56 @@ additive
     {
         fmt.Println("is DOUBLE_LITERAL")
     }
+    | IDENTIFIER
+    {
+        fmt.Println("is identifier")
+    }
+    | FUNCTION
+    {
+        fmt.Println("is FUNCTION")
+    }
+    | IF
+    {
+        fmt.Println("is IF")
+    }
+    | ELSE
+    {
+        fmt.Println("is ELSE")
+    }
+    | ELSIF
+    {
+        fmt.Println("is ELSIF")
+    }
+    | WHILE
+    {
+        fmt.Println("is WHILE")
+    }
+    | FOR
+    {
+        fmt.Println("is FOR")
+    }
+    | RETURN_T
+    {
+        fmt.Println("is RETURN_T")
+    }
+    | BREAK
+    {
+        fmt.Println("is BREAK")
+    }
+    | CONTINUE
+    {
+        fmt.Println("is CONTINUE")
+    }
+    | TRUE_T
+    {
+        fmt.Println("is TRUE_T")
+    }
+    | FALSE_T
+    {
+        fmt.Println("is FALSE_T")
+    }
+    | GLOBAL_T
+    {
+        fmt.Println("is GLOBAL_T")
+    }
 %%

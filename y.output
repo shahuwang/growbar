@@ -4,6 +4,16 @@ state 0
 
 	INT_LITERAL  shift 17
 	DOUBLE_LITERAL  shift 18
+	IDENTIFIER  shift 19
+	FUNCTION  shift 20
+	IF  shift 21
+	ELSE  shift 22
+	ELSIF  shift 23
+	WHILE  shift 24
+	FOR  shift 25
+	RETURN_T  shift 26
+	BREAK  shift 27
+	CONTINUE  shift 28
 	ASSIGN  shift 10
 	LOGICAL_AND  shift 8
 	LOGICAL_OR  shift 9
@@ -18,6 +28,9 @@ state 0
 	MUL  shift 5
 	DIV  shift 6
 	MOD  shift 7
+	TRUE_T  shift 29
+	FALSE_T  shift 30
+	GLOBAL_T  shift 31
 	.  error
 
 	translation_unit  goto 1
@@ -30,6 +43,16 @@ state 1
 	$end  accept
 	INT_LITERAL  shift 17
 	DOUBLE_LITERAL  shift 18
+	IDENTIFIER  shift 19
+	FUNCTION  shift 20
+	IF  shift 21
+	ELSE  shift 22
+	ELSIF  shift 23
+	WHILE  shift 24
+	FOR  shift 25
+	RETURN_T  shift 26
+	BREAK  shift 27
+	CONTINUE  shift 28
 	ASSIGN  shift 10
 	LOGICAL_AND  shift 8
 	LOGICAL_OR  shift 9
@@ -44,9 +67,12 @@ state 1
 	MUL  shift 5
 	DIV  shift 6
 	MOD  shift 7
+	TRUE_T  shift 29
+	FALSE_T  shift 30
+	GLOBAL_T  shift 31
 	.  error
 
-	additive  goto 19
+	additive  goto 32
 
 state 2
 	translation_unit:  additive.    (1)
@@ -151,20 +177,98 @@ state 18
 
 
 state 19
+	additive:  IDENTIFIER.    (19)
+
+	.  reduce 19 (src line 87)
+
+
+state 20
+	additive:  FUNCTION.    (20)
+
+	.  reduce 20 (src line 91)
+
+
+state 21
+	additive:  IF.    (21)
+
+	.  reduce 21 (src line 95)
+
+
+state 22
+	additive:  ELSE.    (22)
+
+	.  reduce 22 (src line 99)
+
+
+state 23
+	additive:  ELSIF.    (23)
+
+	.  reduce 23 (src line 103)
+
+
+state 24
+	additive:  WHILE.    (24)
+
+	.  reduce 24 (src line 107)
+
+
+state 25
+	additive:  FOR.    (25)
+
+	.  reduce 25 (src line 111)
+
+
+state 26
+	additive:  RETURN_T.    (26)
+
+	.  reduce 26 (src line 115)
+
+
+state 27
+	additive:  BREAK.    (27)
+
+	.  reduce 27 (src line 119)
+
+
+state 28
+	additive:  CONTINUE.    (28)
+
+	.  reduce 28 (src line 123)
+
+
+state 29
+	additive:  TRUE_T.    (29)
+
+	.  reduce 29 (src line 127)
+
+
+state 30
+	additive:  FALSE_T.    (30)
+
+	.  reduce 30 (src line 131)
+
+
+state 31
+	additive:  GLOBAL_T.    (31)
+
+	.  reduce 31 (src line 135)
+
+
+state 32
 	translation_unit:  translation_unit additive.    (2)
 
 	.  reduce 2 (src line 20)
 
 
 40 terminals, 3 nonterminals
-19 grammar rules, 20/2000 states
+32 grammar rules, 33/2000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
 52 working sets used
 memory: parser 2/30000
 0 extra closures
-32 shift entries, 1 exceptions
+58 shift entries, 1 exceptions
 3 goto entries
 0 entries saved by goto default
-Optimizer space used: output 34/30000
-34 table entries, 15 zero
-maximum spread: 37, maximum offset: 4
+Optimizer space used: output 37/30000
+37 table entries, 5 zero
+maximum spread: 40, maximum offset: 4

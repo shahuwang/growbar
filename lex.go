@@ -20,6 +20,21 @@ type Growlex struct {
 
 const GEOF = -1
 
+var Keywords = map[string]int{
+	"function": FUNCTION,
+	"if":       IF,
+	"else":     ELSE,
+	"elsif":    ELSIF,
+	"while":    WHILE,
+	"for":      FOR,
+	"return":   RETURN_T,
+	"break":    BREAK,
+	"continue": CONTINUE,
+	"true":     TRUE_T,
+	"false":    FALSE_T,
+	"global":   GLOBAL_T,
+}
+
 func NewLexer(file *os.File) *Growlex {
 	g := new(Growlex)
 	g.File = file
@@ -144,10 +159,10 @@ func (g *Growlex) Lex(lval *GrowSymType) int {
 	case r == ' ' || r == '\t':
 		g.Next()
 		return g.Lex(lval)
-	case r == '0' || r == '1' || r == '2' ||
-		r == '3' || r == '4' || r == '5' || r == '6' ||
-		r == '7' || r == '8' || r == '9':
+	case unicode.IsDigit(r):
 		return g.scanNumber()
+	case isAlpha(r):
+		return g.keywordOrIdentifier()
 	}
 	return 0
 }
@@ -246,7 +261,7 @@ func (g *Growlex) scanNumber() int {
 		if g.accept(".") {
 			if g.accept(digits) {
 				g.acceptRun(digits)
-				if !isAlphaNumeric(g.Peek()) {
+				if !isAlpha(g.Peek()) {
 					return DOUBLE_LITERAL
 				} else {
 					g.Error("wrong number syntax")
@@ -256,7 +271,7 @@ func (g *Growlex) scanNumber() int {
 			g.Error("wrong number syntax")
 			return -1
 		}
-		if !isAlphaNumeric(g.Peek()) {
+		if !isAlpha(g.Peek()) {
 			return INT_LITERAL
 		}
 		g.Error("wrong number syntax")
@@ -267,14 +282,14 @@ func (g *Growlex) scanNumber() int {
 		if g.accept(".") {
 			if g.accept(digits) {
 				g.acceptRun(digits)
-				if !isAlphaNumeric(g.Peek()) {
+				if !isAlpha(g.Peek()) {
 					return DOUBLE_LITERAL
 				}
 			}
 			g.Error("wrong number syntax")
 			return -1
 		}
-		if !isAlphaNumeric(g.Peek()) {
+		if !isAlpha(g.Peek()) {
 			return INT_LITERAL
 		}
 	} else {
@@ -283,6 +298,27 @@ func (g *Growlex) scanNumber() int {
 		return -1
 	}
 	return 0
+}
+
+func (g *Growlex) keywordOrIdentifier() int {
+	runes := make([]rune, 0)
+	for {
+		r := g.Next()
+		runes = append(runes, r)
+		if !isAlphaNumeric(g.Peek()) {
+			break
+		}
+	}
+	word := string(runes)
+	keyword, ok := Keywords[word]
+	if ok {
+		return keyword
+	}
+	return IDENTIFIER
+}
+
+func isAlpha(r rune) bool {
+	return r == '_' || unicode.IsLetter(r)
 }
 
 func isAlphaNumeric(r rune) bool {

@@ -99,7 +99,8 @@ const GrowEofCode = 1
 const GrowErrCode = 2
 const GrowInitialStackSize = 16
 
-//line growbar.y:87
+//line growbar.y:139
+
 //line yacctab:1
 var GrowExca = [...]int{
 	-1, 1,
@@ -107,49 +108,59 @@ var GrowExca = [...]int{
 	-2, 0,
 }
 
-const GrowNprod = 19
+const GrowNprod = 32
 const GrowPrivate = 57344
 
 var GrowTokenNames []string
 var GrowStates []string
 
-const GrowLast = 34
+const GrowLast = 37
 
 var GrowAct = [...]int{
 
-	17, 18, 2, 1, 19, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	17, 18, 1, 19, 20, 21, 22, 23, 24, 25,
+	26, 27, 28, 2, 0, 32, 0, 0, 0, 0,
 	10, 8, 9, 11, 12, 13, 14, 15, 16, 3,
-	4, 5, 6, 7,
+	4, 5, 6, 7, 29, 30, 31,
 }
 var GrowPact = [...]int{
 
 	-4, -4, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
 	-1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
+	-1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
+	-1000, -1000, -1000,
 }
 var GrowPgo = [...]int{
 
-	0, 3, 2,
+	0, 2, 13,
 }
 var GrowR1 = [...]int{
 
 	0, 1, 1, 2, 2, 2, 2, 2, 2, 2,
-	2, 2, 2, 2, 2, 2, 2, 2, 2,
+	2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+	2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+	2, 2,
 }
 var GrowR2 = [...]int{
 
 	0, 1, 2, 1, 1, 1, 1, 1, 1, 1,
-	1, 1, 1, 1, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	1, 1,
 }
 var GrowChk = [...]int{
 
 	-1000, -1, -2, 33, 34, 35, 36, 37, 25, 26,
-	24, 27, 28, 29, 30, 31, 32, 4, 5, -2,
+	24, 27, 28, 29, 30, 31, 32, 4, 5, 7,
+	8, 9, 10, 11, 12, 13, 14, 15, 16, 38,
+	39, 40, -2,
 }
 var GrowDef = [...]int{
 
 	0, -2, 1, 3, 4, 5, 6, 7, 8, 9,
-	10, 11, 12, 13, 14, 15, 16, 17, 18, 2,
+	10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+	20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
+	30, 31, 2,
 }
 var GrowTok1 = [...]int{
 
@@ -598,6 +609,84 @@ Growdefault:
 		//line growbar.y:84
 		{
 			fmt.Println("is DOUBLE_LITERAL")
+		}
+	case 19:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:88
+		{
+			fmt.Println("is identifier")
+		}
+	case 20:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:92
+		{
+			fmt.Println("is FUNCTION")
+		}
+	case 21:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:96
+		{
+			fmt.Println("is IF")
+		}
+	case 22:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:100
+		{
+			fmt.Println("is ELSE")
+		}
+	case 23:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:104
+		{
+			fmt.Println("is ELSIF")
+		}
+	case 24:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:108
+		{
+			fmt.Println("is WHILE")
+		}
+	case 25:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:112
+		{
+			fmt.Println("is FOR")
+		}
+	case 26:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:116
+		{
+			fmt.Println("is RETURN_T")
+		}
+	case 27:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:120
+		{
+			fmt.Println("is BREAK")
+		}
+	case 28:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:124
+		{
+			fmt.Println("is CONTINUE")
+		}
+	case 29:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:128
+		{
+			fmt.Println("is TRUE_T")
+		}
+	case 30:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:132
+		{
+			fmt.Println("is FALSE_T")
+		}
+	case 31:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:136
+		{
+			fmt.Println("is GLOBAL_T")
 		}
 	}
 	goto Growstack /* stack new state and value */
