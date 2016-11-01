@@ -78,10 +78,10 @@ additive
     }
     | INT_LITERAL
     {
-        fmt.Println($1)
+        fmt.Println("is INT_LITERAL")
     }
     | DOUBLE_LITERAL
     {
-        fmt.Println($1)
+        fmt.Println("is DOUBLE_LITERAL")
     }
 %%

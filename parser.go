@@ -591,13 +591,13 @@ Growdefault:
 		GrowDollar = GrowS[Growpt-1 : Growpt+1]
 		//line growbar.y:80
 		{
-			fmt.Println(GrowDollar[1].expression)
+			fmt.Println("is INT_LITERAL")
 		}
 	case 18:
 		GrowDollar = GrowS[Growpt-1 : Growpt+1]
 		//line growbar.y:84
 		{
-			fmt.Println(GrowDollar[1].expression)
+			fmt.Println("is DOUBLE_LITERAL")
 		}
 	}
 	goto Growstack /* stack new state and value */

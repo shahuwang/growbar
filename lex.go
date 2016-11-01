@@ -6,7 +6,7 @@ import (
 	"io"
 	"os"
 	"strings"
-	// "unicode"
+	"unicode"
 	"unicode/utf8"
 )
 
@@ -47,10 +47,7 @@ func (g *Growlex) Peek() rune {
 		return GEOF
 	}
 	if r == utf8.RuneError && n == 1 {
-		ipt := getCurrentInterpreter()
-		compileError(
-			ipt.current_line_number,
-			CHARACTER_INVALID_ERR, string(r))
+		g.Error("invalid character")
 	}
 	return r
 }
@@ -68,7 +65,9 @@ func (g *Growlex) Ignore() {
 }
 
 func (g *Growlex) Error(s string) {
-	panic(s)
+	ipt := getCurrentInterpreter()
+	msg := fmt.Sprintf("line %d: %s", s)
+	panic(msg)
 }
 
 func (g *Growlex) accept(valid string) bool {
@@ -121,9 +120,15 @@ func (g *Growlex) Lex(lval *GrowSymType) int {
 		return g.ltOrLte()
 	case r == '+':
 		g.Next()
+		if g.accept("0123456789") {
+			return g.scanNumber()
+		}
 		return ADD
 	case r == '-':
 		g.Next()
+		if g.accept("0123456789") {
+			return g.scanNumber()
+		}
 		return SUB
 	case r == '/':
 		g.Next()
@@ -160,8 +165,7 @@ func (g *Growlex) logicAnd() int {
 		g.Next()
 		return LOGICAL_AND
 	}
-	ipt := getCurrentInterpreter()
-	msg := fmt.Sprintf("line %d, & must follow another &", ipt.current_line_number)
+	msg := "& must follow another &"
 	g.Error(msg)
 	return -1
 }
@@ -173,8 +177,7 @@ func (g *Growlex) loginOr() int {
 		g.Next()
 		return LOGICAL_OR
 	}
-	ipt := getCurrentInterpreter()
-	msg := fmt.Sprintf("line %d, | must follow another |", ipt.current_line_number)
+	msg := "| must follow another |"
 	g.Error(msg)
 	return -1
 }
@@ -196,8 +199,7 @@ func (g *Growlex) notEqual() int {
 		g.Next()
 		return NE
 	}
-	ipt := getCurrentInterpreter()
-	msg := fmt.Sprintf("line %d, ! must follow by =", ipt.current_line_number)
+	msg := "! must follow by ="
 	g.Error(msg)
 	return -1
 }
@@ -231,7 +233,7 @@ func (g *Growlex) winNewLine() int {
 		ipt.current_line_number++
 		return 0
 	}
-	msg := fmt.Sprintf("line %d, error windows new line symbol \r", ipt.current_line_number)
+	msg := "error windows new line symbol \r"
 	g.Error(msg)
 	return -1
 }
@@ -250,24 +252,42 @@ func (g *Growlex) scanNumber() int {
 		if g.accept(".") {
 			if g.accept(digits) {
 				g.acceptRun(digits)
-				return DOUBLE_LITERAL
+				if !isAlphaNumeric(g.Peek()) {
+					return DOUBLE_LITERAL
+				} else {
+					g.Error("wrong number syntax")
+					return -1
+				}
 			}
-			g.Back()
+			g.Error("wrong number syntax")
+			return -1
+		}
+		if !isAlphaNumeric(g.Peek()) {
 			return INT_LITERAL
 		}
-		return INT_LITERAL
+		g.Error("wrong number syntax")
+		return -1
 	}
 	if g.accept(digits) {
 		g.acceptRun(digits)
 		if g.accept(".") {
 			if g.accept(digits) {
 				g.acceptRun(digits)
-				return DOUBLE_LITERAL
+				if !isAlphaNumeric(g.Peek()) {
+					return DOUBLE_LITERAL
+				}
 			}
-			g.Back()
+			g.Error("wrong number syntax")
+			return -1
+		}
+		if !isAlphaNumeric(g.Peek()) {
 			return INT_LITERAL
 		}
-		return INT_LITERAL
 	}
+	g.Error("wrong number syntax")
 	return -1
+}
+
+func isAlphaNumeric(r rune) bool {
+	return r == '_' || unicode.IsLetter(r) || unicode.IsDigit(r)
 }
