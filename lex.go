@@ -66,7 +66,7 @@ func (g *Growlex) Ignore() {
 
 func (g *Growlex) Error(s string) {
 	ipt := getCurrentInterpreter()
-	msg := fmt.Sprintf("line %d: %s", s)
+	msg := fmt.Sprintf("line %d: %s", ipt.current_line_number, s)
 	panic(msg)
 }
 
@@ -120,15 +120,9 @@ func (g *Growlex) Lex(lval *GrowSymType) int {
 		return g.ltOrLte()
 	case r == '+':
 		g.Next()
-		if g.accept("0123456789") {
-			return g.scanNumber()
-		}
 		return ADD
 	case r == '-':
 		g.Next()
-		if g.accept("0123456789") {
-			return g.scanNumber()
-		}
 		return SUB
 	case r == '/':
 		g.Next()
@@ -283,9 +277,12 @@ func (g *Growlex) scanNumber() int {
 		if !isAlphaNumeric(g.Peek()) {
 			return INT_LITERAL
 		}
+	} else {
+		msg := fmt.Sprintf("syntax7, %s", string(g.Peek()))
+		g.Error(msg)
+		return -1
 	}
-	g.Error("wrong number syntax")
-	return -1
+	return 0
 }
 
 func isAlphaNumeric(r rune) bool {
