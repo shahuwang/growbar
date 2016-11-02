@@ -165,6 +165,9 @@ func (g *Growlex) Lex(lval *GrowSymType) int {
 		return g.keywordOrIdentifier()
 	case r == '"':
 		return g.scanString()
+	case r == '#':
+		g.scanComment()
+		return g.Lex(lval)
 	}
 	return 0
 }
@@ -362,6 +365,17 @@ LOOP:
 	}
 	g.Error("string without \" enclose")
 	return -1
+}
+
+func (g *Growlex) scanComment() {
+	g.Next()
+	for {
+		r := g.Peek()
+		if r == '\n' || r == '\r' || r == GEOF {
+			break
+		}
+		g.Next()
+	}
 }
 
 func isAlpha(r rune) bool {
