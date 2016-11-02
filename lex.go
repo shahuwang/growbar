@@ -163,6 +163,8 @@ func (g *Growlex) Lex(lval *GrowSymType) int {
 		return g.scanNumber()
 	case isAlpha(r):
 		return g.keywordOrIdentifier()
+	case r == '"':
+		return g.scanString()
 	}
 	return 0
 }
@@ -315,6 +317,51 @@ func (g *Growlex) keywordOrIdentifier() int {
 		return keyword
 	}
 	return IDENTIFIER
+}
+
+func (g *Growlex) scanString() int {
+	runes := make([]rune, 0)
+	g.Next()
+LOOP:
+	for {
+		r := g.Peek()
+		switch {
+		case r == '\\':
+			g.Next()
+			r2 := g.Peek()
+			switch {
+			case r2 == 'n':
+				// 换行转义符
+				g.Next()
+				runes = append(runes, '\n')
+			case r2 == 't':
+				g.Next()
+				runes = append(runes, '\t')
+			case r2 == '"':
+				g.Next()
+				runes = append(runes, '"')
+			default:
+				g.Next()
+				runes = append(runes, '\\')
+			}
+		case r == '"':
+			g.Next()
+			return STRING_LITERAL
+		case r == '\r' || r == '\n':
+			g.Next()
+			ipt := getCurrentInterpreter()
+			ipt.current_line_number++
+			runes = append(runes, '\n')
+		case r == GEOF:
+			g.Next()
+			break LOOP
+		default:
+			g.Next()
+			runes = append(runes, r)
+		}
+	}
+	g.Error("string without \" enclose")
+	return -1
 }
 
 func isAlpha(r rune) bool {

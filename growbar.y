@@ -136,4 +136,8 @@ additive
     {
         fmt.Println("is GLOBAL_T")
     }
+    | STRING_LITERAL
+    {
+        fmt.Println("is STRING_LITERAL")
+    }
 %%

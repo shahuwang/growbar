@@ -99,7 +99,7 @@ const GrowEofCode = 1
 const GrowErrCode = 2
 const GrowInitialStackSize = 16
 
-//line growbar.y:139
+//line growbar.y:143
 
 //line yacctab:1
 var GrowExca = [...]int{
@@ -108,7 +108,7 @@ var GrowExca = [...]int{
 	-2, 0,
 }
 
-const GrowNprod = 32
+const GrowNprod = 33
 const GrowPrivate = 57344
 
 var GrowTokenNames []string
@@ -118,8 +118,8 @@ const GrowLast = 37
 
 var GrowAct = [...]int{
 
-	17, 18, 1, 19, 20, 21, 22, 23, 24, 25,
-	26, 27, 28, 2, 0, 32, 0, 0, 0, 0,
+	17, 18, 32, 19, 20, 21, 22, 23, 24, 25,
+	26, 27, 28, 2, 1, 33, 0, 0, 0, 0,
 	10, 8, 9, 11, 12, 13, 14, 15, 16, 3,
 	4, 5, 6, 7, 29, 30, 31,
 }
@@ -128,39 +128,39 @@ var GrowPact = [...]int{
 	-4, -4, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
 	-1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
 	-1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
-	-1000, -1000, -1000,
+	-1000, -1000, -1000, -1000,
 }
 var GrowPgo = [...]int{
 
-	0, 2, 13,
+	0, 14, 13,
 }
 var GrowR1 = [...]int{
 
 	0, 1, 1, 2, 2, 2, 2, 2, 2, 2,
 	2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
 	2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-	2, 2,
+	2, 2, 2,
 }
 var GrowR2 = [...]int{
 
 	0, 1, 2, 1, 1, 1, 1, 1, 1, 1,
 	1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 	1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	1, 1,
+	1, 1, 1,
 }
 var GrowChk = [...]int{
 
 	-1000, -1, -2, 33, 34, 35, 36, 37, 25, 26,
 	24, 27, 28, 29, 30, 31, 32, 4, 5, 7,
 	8, 9, 10, 11, 12, 13, 14, 15, 16, 38,
-	39, 40, -2,
+	39, 40, 6, -2,
 }
 var GrowDef = [...]int{
 
 	0, -2, 1, 3, 4, 5, 6, 7, 8, 9,
 	10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
 	20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-	30, 31, 2,
+	30, 31, 32, 2,
 }
 var GrowTok1 = [...]int{
 
@@ -687,6 +687,12 @@ Growdefault:
 		//line growbar.y:136
 		{
 			fmt.Println("is GLOBAL_T")
+		}
+	case 32:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:140
+		{
+			fmt.Println("is STRING_LITERAL")
 		}
 	}
 	goto Growstack /* stack new state and value */

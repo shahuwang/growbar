@@ -4,6 +4,7 @@ state 0
 
 	INT_LITERAL  shift 17
 	DOUBLE_LITERAL  shift 18
+	STRING_LITERAL  shift 32
 	IDENTIFIER  shift 19
 	FUNCTION  shift 20
 	IF  shift 21
@@ -43,6 +44,7 @@ state 1
 	$end  accept
 	INT_LITERAL  shift 17
 	DOUBLE_LITERAL  shift 18
+	STRING_LITERAL  shift 32
 	IDENTIFIER  shift 19
 	FUNCTION  shift 20
 	IF  shift 21
@@ -72,7 +74,7 @@ state 1
 	GLOBAL_T  shift 31
 	.  error
 
-	additive  goto 32
+	additive  goto 33
 
 state 2
 	translation_unit:  additive.    (1)
@@ -255,20 +257,26 @@ state 31
 
 
 state 32
+	additive:  STRING_LITERAL.    (32)
+
+	.  reduce 32 (src line 139)
+
+
+state 33
 	translation_unit:  translation_unit additive.    (2)
 
 	.  reduce 2 (src line 20)
 
 
 40 terminals, 3 nonterminals
-32 grammar rules, 33/2000 states
+33 grammar rules, 34/2000 states
 0 shift/reduce, 0 reduce/reduce conflicts reported
 52 working sets used
 memory: parser 2/30000
 0 extra closures
-58 shift entries, 1 exceptions
+60 shift entries, 1 exceptions
 3 goto entries
 0 entries saved by goto default
 Optimizer space used: output 37/30000
-37 table entries, 5 zero
+37 table entries, 4 zero
 maximum spread: 40, maximum offset: 4
