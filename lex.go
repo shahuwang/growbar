@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"strings"
 	"unicode"
 	"unicode/utf8"
@@ -14,7 +15,7 @@ type Growlex struct {
 	File   *os.File
 	Pos    int
 	Start  int
-	Width  int
+	runes  []rune
 	reader *bufio.Reader
 }
 
@@ -43,15 +44,15 @@ func NewLexer(file *os.File) *Growlex {
 }
 
 func (g *Growlex) Next() rune {
-	r, n, err := g.reader.ReadRune()
+	r, _, err := g.reader.ReadRune()
 	if err == io.EOF {
 		return GEOF
 	}
 	if err != nil {
 		panic(err)
 	}
-	g.Width = n
-	g.Pos = g.Pos + g.Width
+	g.runes = append(g.runes, r)
+	g.Pos++
 	return r
 }
 
@@ -72,11 +73,29 @@ func (g *Growlex) Back() {
 	if err != nil {
 		panic(err)
 	}
-	g.Pos = g.Pos - g.Width
+	g.Pos = g.Pos - 1
+	g.runes = g.runes[0:g.Pos]
 }
 
 func (g *Growlex) Ignore() {
 	g.Start = g.Pos
+}
+
+func (g *Growlex) ignoreLast() {
+	// 用于处理字符串里面的转义字符
+	g.runes = g.runes[0 : g.Pos-2]
+	g.Pos = g.Pos - 1
+}
+
+func (g *Growlex) hit() string {
+	if len(g.runes) == 0 {
+		g.Start = 0
+		g.Pos = 0
+		return ""
+	}
+	val := g.runes[g.Start:g.Pos]
+	g.Ignore()
+	return string(val)
 }
 
 func (g *Growlex) Error(s string) {
@@ -105,21 +124,27 @@ func (g *Growlex) Lex(lval *GrowSymType) int {
 	switch {
 	case r == '(':
 		g.Next()
+		g.hit()
 		return LP
 	case r == ')':
 		g.Next()
+		g.hit()
 		return RP
 	case r == '{':
 		g.Next()
+		g.hit()
 		return LC
 	case r == '}':
 		g.Next()
+		g.hit()
 		return RC
 	case r == ';':
 		g.Next()
+		g.hit()
 		return SEMICOLON
 	case r == ',':
 		g.Next()
+		g.hit()
 		return COMMA
 	case r == '&':
 		return g.logicAnd()
@@ -135,18 +160,23 @@ func (g *Growlex) Lex(lval *GrowSymType) int {
 		return g.ltOrLte()
 	case r == '+':
 		g.Next()
+		g.hit()
 		return ADD
 	case r == '-':
 		g.Next()
+		g.hit()
 		return SUB
 	case r == '/':
 		g.Next()
+		g.hit()
 		return DIV
 	case r == '%':
 		g.Next()
+		g.hit()
 		return MOD
 	case r == '*':
 		g.Next()
+		g.hit()
 		return MUL
 	case r == '\r':
 		if g.winNewLine() == 0 {
@@ -158,16 +188,23 @@ func (g *Growlex) Lex(lval *GrowSymType) int {
 		}
 	case r == ' ' || r == '\t':
 		g.Next()
+		g.hit()
 		return g.Lex(lval)
 	case unicode.IsDigit(r):
-		return g.scanNumber()
+		return g.scanNumber(lval)
 	case isAlpha(r):
-		return g.keywordOrIdentifier()
+		return g.keywordOrIdentifier(lval)
 	case r == '"':
-		return g.scanString()
+		return g.scanString(lval)
 	case r == '#':
 		g.scanComment()
 		return g.Lex(lval)
+	case r == GEOF:
+		return 0
+	default:
+		fmt.Println(r)
+		g.Error("error character: " + string(r))
+		return -1
 	}
 	return 0
 }
@@ -177,6 +214,7 @@ func (g *Growlex) logicAnd() int {
 	r := g.Peek()
 	if r == '&' {
 		g.Next()
+		g.hit()
 		return LOGICAL_AND
 	}
 	msg := "& must follow another &"
@@ -189,6 +227,7 @@ func (g *Growlex) loginOr() int {
 	r := g.Peek()
 	if r == '|' {
 		g.Next()
+		g.hit()
 		return LOGICAL_OR
 	}
 	msg := "| must follow another |"
@@ -201,8 +240,10 @@ func (g *Growlex) assignOrEqual() int {
 	r := g.Peek()
 	if r == '=' {
 		g.Next()
+		g.hit()
 		return EQ
 	}
+	g.hit()
 	return ASSIGN
 }
 
@@ -211,6 +252,7 @@ func (g *Growlex) notEqual() int {
 	r := g.Peek()
 	if r == '=' {
 		g.Next()
+		g.hit()
 		return NE
 	}
 	msg := "! must follow by ="
@@ -223,8 +265,10 @@ func (g *Growlex) gtOrGte() int {
 	r := g.Peek()
 	if r == '=' {
 		g.Next()
+		g.hit()
 		return GE
 	}
+	g.hit()
 	return GT
 }
 
@@ -233,8 +277,10 @@ func (g *Growlex) ltOrLte() int {
 	r := g.Peek()
 	if r == '=' {
 		g.Next()
+		g.hit()
 		return LE
 	}
+	g.hit()
 	return LT
 }
 
@@ -244,6 +290,7 @@ func (g *Growlex) winNewLine() int {
 	ipt := getCurrentInterpreter()
 	if r == '\n' {
 		g.Next()
+		g.hit()
 		ipt.current_line_number++
 		return 0
 	}
@@ -256,17 +303,29 @@ func (g *Growlex) unixNewLine() int {
 	g.Next()
 	ipt := getCurrentInterpreter()
 	ipt.current_line_number++
+	g.hit()
 	return 0
 }
 
-func (g *Growlex) scanNumber() int {
+func (g *Growlex) scanNumber(lval *GrowSymType) int {
+	exp := allocExpression(INT_EXPRESSION)
+	lval.expression = exp
+	runes := make([]rune, 0)
 	digits := "0123456789"
 	if g.accept("0") {
 		// 只能是0或者小数
+		runes = append(runes, '0')
 		if g.accept(".") {
 			if g.accept(digits) {
 				g.acceptRun(digits)
 				if !isAlpha(g.Peek()) {
+					num := g.hit()
+					f, err := strconv.ParseFloat(num, 32)
+					if err != nil {
+						g.Error(err.Error())
+						return -1
+					}
+					exp.double_value = float32(f)
 					return DOUBLE_LITERAL
 				} else {
 					g.Error("wrong number syntax")
@@ -277,6 +336,13 @@ func (g *Growlex) scanNumber() int {
 			return -1
 		}
 		if !isAlpha(g.Peek()) {
+			num := g.hit()
+			ival, err := strconv.ParseInt(num, 10, 32)
+			if err != nil {
+				g.Error(err.Error())
+				return -1
+			}
+			exp.int_value = int(ival)
 			return INT_LITERAL
 		}
 		g.Error("wrong number syntax")
@@ -288,6 +354,13 @@ func (g *Growlex) scanNumber() int {
 			if g.accept(digits) {
 				g.acceptRun(digits)
 				if !isAlpha(g.Peek()) {
+					num := g.hit()
+					f, err := strconv.ParseFloat(num, 32)
+					if err != nil {
+						g.Error(err.Error())
+						return -1
+					}
+					exp.double_value = float32(f)
 					return DOUBLE_LITERAL
 				}
 			}
@@ -295,6 +368,13 @@ func (g *Growlex) scanNumber() int {
 			return -1
 		}
 		if !isAlpha(g.Peek()) {
+			num := g.hit()
+			ival, err := strconv.ParseInt(num, 10, 32)
+			if err != nil {
+				g.Error(err.Error())
+				return -1
+			}
+			exp.int_value = int(ival)
 			return INT_LITERAL
 		}
 	} else {
@@ -305,25 +385,25 @@ func (g *Growlex) scanNumber() int {
 	return 0
 }
 
-func (g *Growlex) keywordOrIdentifier() int {
-	runes := make([]rune, 0)
+func (g *Growlex) keywordOrIdentifier(lval *GrowSymType) int {
 	for {
-		r := g.Next()
-		runes = append(runes, r)
+		g.Next()
 		if !isAlphaNumeric(g.Peek()) {
 			break
 		}
 	}
-	word := string(runes)
+	word := g.hit()
 	keyword, ok := Keywords[word]
 	if ok {
 		return keyword
 	}
+	lval.identifier = word
 	return IDENTIFIER
 }
 
-func (g *Growlex) scanString() int {
-	runes := make([]rune, 0)
+func (g *Growlex) scanString(lval *GrowSymType) int {
+	exp := allocExpression(STRING_EXPRESSION)
+	lval.expression = exp
 	g.Next()
 LOOP:
 	for {
@@ -336,31 +416,32 @@ LOOP:
 			case r2 == 'n':
 				// 换行转义符
 				g.Next()
-				runes = append(runes, '\n')
+				g.ignoreLast()
+				g.runes = append(g.runes, '\n')
 			case r2 == 't':
 				g.Next()
-				runes = append(runes, '\t')
+				g.ignoreLast()
+				g.runes = append(g.runes, '\t')
 			case r2 == '"':
 				g.Next()
-				runes = append(runes, '"')
+				g.ignoreLast()
+				g.runes = append(g.runes, '"')
 			default:
 				g.Next()
-				runes = append(runes, '\\')
 			}
 		case r == '"':
 			g.Next()
+			exp.string_value = g.hit()
 			return STRING_LITERAL
 		case r == '\r' || r == '\n':
 			g.Next()
 			ipt := getCurrentInterpreter()
 			ipt.current_line_number++
-			runes = append(runes, '\n')
 		case r == GEOF:
 			g.Next()
 			break LOOP
 		default:
 			g.Next()
-			runes = append(runes, r)
 		}
 	}
 	g.Error("string without \" enclose")
@@ -372,6 +453,7 @@ func (g *Growlex) scanComment() {
 	for {
 		r := g.Peek()
 		if r == '\n' || r == '\r' || r == GEOF {
+			g.hit()
 			break
 		}
 		g.Next()

@@ -5,6 +5,8 @@ import(
 )
 %}
 %union {
+    identifier string
+    expression *Expression
 }
 
 %token <expression> INT_LITERAL
@@ -78,15 +80,15 @@ additive
     }
     | INT_LITERAL
     {
-        fmt.Println("is INT_LITERAL")
+        fmt.Println($1.int_value)
     }
     | DOUBLE_LITERAL
     {
-        fmt.Println("is DOUBLE_LITERAL")
+        fmt.Println($1.double_value)
     }
     | IDENTIFIER
     {
-        fmt.Println("is identifier")
+        fmt.Println($1)
     }
     | FUNCTION
     {
@@ -138,6 +140,6 @@ additive
     }
     | STRING_LITERAL
     {
-        fmt.Println("is STRING_LITERAL")
+        fmt.Println($1.string_value)
     }
 %%

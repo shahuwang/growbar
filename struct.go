@@ -33,8 +33,13 @@ const (
 )
 
 type Expression struct {
-	Type        ExpressionType
-	line_number int
+	Type          ExpressionType
+	line_number   int
+	boolean_value bool
+	int_value     int
+	double_value  float32
+	string_value  string
+	identifier    string
 }
 
 type CompileError int
