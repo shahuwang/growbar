@@ -31,6 +31,7 @@ var Keywords = map[string]int{
 	"return":   RETURN_T,
 	"break":    BREAK,
 	"continue": CONTINUE,
+	"null":     NULL_T,
 	"true":     TRUE_T,
 	"false":    FALSE_T,
 	"global":   GLOBAL_T,
@@ -202,7 +203,6 @@ func (g *Growlex) Lex(lval *GrowSymType) int {
 	case r == GEOF:
 		return 0
 	default:
-		fmt.Println(r)
 		g.Error("error character: " + string(r))
 		return -1
 	}

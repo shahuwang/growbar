@@ -1,7 +1,7 @@
 %{
 package main
 import(
-  "fmt"
+ /* "fmt" */
 )
 %}
 %union {
@@ -16,130 +16,70 @@ import(
 %token FUNCTION IF ELSE ELSIF WHILE FOR RETURN_T BREAK CONTINUE NULL_T
         LP RP LC RC SEMICOLON COMMA ASSIGN LOGICAL_AND LOGICAL_OR EQ NE
         GT GE LT LE ADD SUB MUL DIV MOD TRUE_T FALSE_T GLOBAL_T
+%type <expression> primary_expression unary_expression multiplicative_expression
+                additive_expression
 %%
 translation_unit
-    : additive
-    | translation_unit additive
+    : additive_expression
+    | translation_unit additive_expression
     ;
-additive
-    : ADD
+additive_expression
+    : multiplicative_expression
+    | additive_expression ADD multiplicative_expression
     {
-        fmt.Println("is ADD")
+        $$ = createBinaryExpression(ADD_EXPRESSION, $1, $3)
     }
-    | SUB
+    | additive_expression SUB multiplicative_expression
     {
-        fmt.Println("is SUB")
+        $$ = createBinaryExpression(SUB_EXPRESSION, $1, $3)
     }
-    | MUL
+    ;
+multiplicative_expression
+    : unary_expression
+    | multiplicative_expression MUL unary_expression
     {
-        fmt.Println("is MUL")
+       $$ = createBinaryExpression(MUL_EXPRESSION, $1, $3) 
     }
-    | DIV
+    | multiplicative_expression DIV unary_expression
     {
-        fmt.Println("is DIV")
+       $$ = createBinaryExpression(DIV_EXPRESSION, $1, $3) 
     }
-    | MOD
+    | multiplicative_expression MOD unary_expression
     {
-        fmt.Println("is MOD")
+       $$ = createBinaryExpression(MOD_EXPRESSION, $1, $3) 
     }
-    | LOGICAL_AND
+    ;
+
+unary_expression
+    : primary_expression
+    | SUB unary_expression
     {
-        fmt.Println("is AND")
+        $$ = createMinusExpression($2)  
     }
-    | LOGICAL_OR
+    | ADD unary_expression
     {
-        fmt.Println("is OR")
+        $$ = createAddExpression($2) 
     }
-    | ASSIGN
+    ;
+primary_expression
+    : IDENTIFIER
     {
-        fmt.Println("is ASSIGN")
-    }
-    | EQ
-    {
-        fmt.Println("is EQ")
-    }
-    | NE
-    {
-        fmt.Println("is NE")
-    }
-    | GT
-    {
-        fmt.Println("is GT")
-    }
-    | GE
-    {
-        fmt.Println("is GE")
-    }
-    | LT
-    {
-        fmt.Println("is LT")
-    }
-    | LE
-    {
-        fmt.Println("is LE")
+        $$ = createIdentifierExpression($1)  
     }
     | INT_LITERAL
-    {
-        fmt.Println($1.int_value)
-    }
     | DOUBLE_LITERAL
-    {
-        fmt.Println($1.double_value)
-    }
-    | IDENTIFIER
-    {
-        fmt.Println($1)
-    }
-    | FUNCTION
-    {
-        fmt.Println("is FUNCTION")
-    }
-    | IF
-    {
-        fmt.Println("is IF")
-    }
-    | ELSE
-    {
-        fmt.Println("is ELSE")
-    }
-    | ELSIF
-    {
-        fmt.Println("is ELSIF")
-    }
-    | WHILE
-    {
-        fmt.Println("is WHILE")
-    }
-    | FOR
-    {
-        fmt.Println("is FOR")
-    }
-    | RETURN_T
-    {
-        fmt.Println("is RETURN_T")
-    }
-    | BREAK
-    {
-        fmt.Println("is BREAK")
-    }
-    | CONTINUE
-    {
-        fmt.Println("is CONTINUE")
-    }
+    | STRING_LITERAL
     | TRUE_T
     {
-        fmt.Println("is TRUE_T")
+        $$ = createBooleanExpression(true)
     }
     | FALSE_T
     {
-        fmt.Println("is FALSE_T")
+        $$ = createBooleanExpression(false)
     }
-    | GLOBAL_T
+    | NULL_T
     {
-        fmt.Println("is GLOBAL_T")
+        $$ = createNullExpression();
     }
-    | STRING_LITERAL
-    {
-        fmt.Println($1.string_value)
-    }
+    ;
 %%
