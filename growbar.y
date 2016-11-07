@@ -1,7 +1,7 @@
 %{
 package main
 import(
- /* "fmt" */
+ "fmt"
 )
 %}
 %union {
@@ -17,11 +17,62 @@ import(
         LP RP LC RC SEMICOLON COMMA ASSIGN LOGICAL_AND LOGICAL_OR EQ NE
         GT GE LT LE ADD SUB MUL DIV MOD TRUE_T FALSE_T GLOBAL_T
 %type <expression> primary_expression unary_expression multiplicative_expression
-                additive_expression
+                additive_expression relational_expression expression
+                logical_or_expression logical_and_expression  equality_expression
 %%
 translation_unit
+    : expression
+    | translation_unit expression
+    ;
+expression
+    : logical_or_expression
+    | IDENTIFIER ASSIGN expression
+    {
+        $$ = createAssignExpression($1, $3)
+    }
+logical_or_expression
+    : logical_and_expression
+    | logical_or_expression LOGICAL_OR logical_and_expression
+    {
+        $$ = createBinaryExpression(LOGICAL_OR_EXPRESSION, $1, $3)
+    }
+    ;
+logical_and_expression
+    : equality_expression
+    | logical_and_expression LOGICAL_AND equality_expression
+    {
+        $$ = createBinaryExpression(LOGICAL_AND_EXPRESSION, $1, $3)
+    }
+    ;
+equality_expression
+    : relational_expression
+    | equality_expression EQ relational_expression
+    {
+        $$ = createBinaryExpression(EQ_EXPRESSION, $1, $3)
+    }
+    | equality_expression NE relational_expression
+    {
+        $$ = createBinaryExpression(NE_EXPRESSION, $1, $3)
+    }
+    ;
+relational_expression
     : additive_expression
-    | translation_unit additive_expression
+    | relational_expression GT additive_expression
+    {
+        $$ = createBinaryExpression(GT_EXPRESSION, $1, $3)
+    }
+    | relational_expression GE additive_expression
+    {
+        $$ = createBinaryExpression(GE_EXPRESSION, $1, $3)
+    }
+    | relational_expression LT additive_expression
+    {
+        $$ = createBinaryExpression(LT_EXPRESSION, $1, $3)
+    }
+    | relational_expression LE additive_expression
+    {
+        $$ = createBinaryExpression(LE_EXPRESSION, $1, $3)
+    }
     ;
 additive_expression
     : multiplicative_expression
@@ -58,11 +109,16 @@ unary_expression
     }
     | ADD unary_expression
     {
+        fmt.Println($2)
         $$ = createAddExpression($2) 
     }
     ;
 primary_expression
-    : IDENTIFIER
+    : LP expression RP
+    {
+        $$ = $2
+    }
+    | IDENTIFIER
     {
         $$ = createIdentifierExpression($1)  
     }
