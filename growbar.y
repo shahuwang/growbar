@@ -1,12 +1,15 @@
 %{
 package main
 import(
- "fmt"
+ /* "fmt" */
 )
 %}
 %union {
     identifier string
     expression *Expression
+    statement *Statement
+    statement_list *StatementList
+    block *Block
 }
 
 %token <expression> INT_LITERAL
@@ -17,12 +20,29 @@ import(
         LP RP LC RC SEMICOLON COMMA ASSIGN LOGICAL_AND LOGICAL_OR EQ NE
         GT GE LT LE ADD SUB MUL DIV MOD TRUE_T FALSE_T GLOBAL_T
 %type <expression> primary_expression unary_expression multiplicative_expression
-                additive_expression relational_expression expression
+                additive_expression relational_expression expression expression_opt
                 logical_or_expression logical_and_expression  equality_expression
+
+%type <statement> continue_statement return_statement break_statement statement
+                for_statement
+%type <statement_list> statement_list
+%type <block> block
 %%
 translation_unit
     : expression
+    | statement
+    | statement_list
     | translation_unit expression
+    ;
+statement_list
+    : statement
+    {
+        $$ = createStatementList($1);
+    }
+    | statement_list statement
+    {
+        $$ = chainStatementList($1, $2);
+    }
     ;
 expression
     : logical_or_expression
@@ -103,15 +123,15 @@ multiplicative_expression
 
 unary_expression
     : primary_expression
-    | SUB unary_expression
-    {
-        $$ = createMinusExpression($2)  
-    }
-    | ADD unary_expression
-    {
-        fmt.Println($2)
-        $$ = createAddExpression($2) 
-    }
+    /* | SUB unary_expression */
+    /* { */
+    /*     $$ = createMinusExpression($2) */  
+    /* } */
+    /* | ADD unary_expression */
+    /* { */
+    /*     fmt.Println($2) */
+    /*     $$ = createAddExpression($2) */ 
+    /* } */
     ;
 primary_expression
     : LP expression RP
@@ -138,4 +158,52 @@ primary_expression
         $$ = createNullExpression();
     }
     ;
+
+statement
+    : expression SEMICOLON
+    {
+        $$ = createExpressionStatement($1);
+    }
+    | for_statement
+    | return_statement
+    | break_statement
+    | continue_statement
+    ;
+for_statement
+    : FOR LP expression_opt SEMICOLON expression_opt SEMICOLON
+      expression_opt RP block
+    {
+        $$ = createForStatement($3, $5, $7, $9);
+    }
+    ;
+expression_opt
+    :
+    {
+        $$ = nil;
+    }
+    | expression
+    ;
+return_statement
+    : RETURN_T expression_opt SEMICOLON
+    {
+        $$ = createReturnStatement($2);
+    }
+    ;
+break_statement
+    : BREAK SEMICOLON
+    {
+        $$ = createBreakStatement();
+    }
+continue_statement
+    : CONTINUE SEMICOLON
+    {
+        $$ = createContinueStatement();
+    }
+
+block
+    : LC RC
+    {
+        $$ = createBlock(nil);
+    }
+
 %%

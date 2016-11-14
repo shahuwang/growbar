@@ -88,9 +88,10 @@ const (
 )
 
 type Statement struct {
-	typ         StatementType
-	line_number int
-	u           interface{}
+	typ             StatementType
+	line_number     int
+	expresion_s     *Expression
+	identifier_list *IdentifierList
 }
 
 type StatementList struct {

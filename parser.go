@@ -5,14 +5,17 @@ import __yyfmt__ "fmt"
 
 //line growbar.y:3
 import (
-	"fmt"
+/* "fmt" */
 )
 
 //line growbar.y:7
 type GrowSymType struct {
-	yys        int
-	identifier string
-	expression *Expression
+	yys            int
+	identifier     string
+	expression     *Expression
+	statement      *Statement
+	statement_list *StatementList
+	block          *Block
 }
 
 const INT_LITERAL = 57346
@@ -101,79 +104,95 @@ const GrowEofCode = 1
 const GrowErrCode = 2
 const GrowInitialStackSize = 16
 
-//line growbar.y:141
+//line growbar.y:209
 
 //line yacctab:1
 var GrowExca = [...]int{
 	-1, 1,
 	1, -1,
 	-2, 0,
+	-1, 3,
+	13, 5,
+	14, 5,
+	15, 5,
+	16, 5,
+	-2, 2,
 }
 
-const GrowNprod = 35
+const GrowNprod = 49
 const GrowPrivate = 57344
 
 var GrowTokenNames []string
 var GrowStates []string
 
-const GrowLast = 79
+const GrowLast = 93
 
 var GrowAct = [...]int{
 
-	15, 16, 17, 37, 10, 31, 32, 15, 16, 17,
-	4, 25, 26, 20, 14, 22, 24, 36, 38, 8,
-	20, 14, 33, 34, 35, 9, 7, 54, 23, 13,
-	12, 1, 5, 3, 18, 19, 13, 12, 51, 52,
-	53, 18, 19, 27, 28, 29, 30, 45, 46, 47,
-	48, 6, 43, 44, 2, 40, 21, 49, 50, 11,
-	0, 0, 0, 0, 0, 0, 0, 0, 0, 39,
-	0, 0, 0, 0, 0, 0, 42, 0, 41,
+	37, 20, 18, 33, 23, 24, 25, 6, 19, 23,
+	24, 25, 6, 12, 13, 14, 15, 28, 22, 16,
+	35, 17, 28, 22, 49, 50, 51, 23, 24, 25,
+	54, 38, 2, 29, 47, 48, 32, 57, 26, 27,
+	28, 22, 11, 26, 27, 34, 61, 62, 63, 64,
+	73, 67, 68, 69, 52, 56, 65, 66, 41, 42,
+	78, 26, 27, 59, 60, 71, 55, 43, 44, 45,
+	46, 58, 72, 30, 74, 40, 53, 39, 77, 75,
+	70, 36, 3, 1, 76, 4, 7, 31, 9, 8,
+	10, 5, 21,
 }
 var GrowPact = [...]int{
 
-	3, 3, -1000, -11, 4, -9, -16, 14, -28, -13,
-	-1000, -1000, -4, -4, 3, -1000, -1000, -1000, -1000, -1000,
-	-1000, -1000, -4, 3, -4, -4, -4, -4, -4, -4,
-	-4, -4, -4, -4, -4, -4, -1000, -1000, -1000, 8,
-	-9, -1000, -16, 14, 14, -28, -28, -28, -28, -13,
-	-13, -1000, -1000, -1000, -1000,
+	0, 5, 51, -1000, 0, -23, 21, -1000, -1000, -1000,
+	-1000, -5, 63, 5, 55, 53, 31, 38, 1, -11,
+	-1000, -1000, 5, -1000, -1000, -1000, -1000, -1000, -1000, -1000,
+	-1000, -1000, 51, 23, 5, 23, 5, 49, -1000, -1000,
+	-1000, 23, 23, 23, 23, 23, 23, 23, 23, 23,
+	23, 23, 61, -5, -1000, -1000, 31, 43, -1000, 38,
+	38, 1, 1, 1, 1, -11, -11, -1000, -1000, -1000,
+	-1000, 5, 28, 5, 60, 58, -1000, 39, -1000,
 }
 var GrowPgo = [...]int{
 
-	0, 59, 4, 25, 19, 26, 54, 33, 32, 51,
-	31,
+	0, 92, 1, 8, 2, 21, 31, 0, 91, 42,
+	19, 90, 89, 88, 82, 86, 85, 84, 83,
 }
 var GrowR1 = [...]int{
 
-	0, 10, 10, 6, 6, 7, 7, 8, 8, 9,
-	9, 9, 5, 5, 5, 5, 5, 4, 4, 4,
-	3, 3, 3, 3, 2, 2, 2, 1, 1, 1,
-	1, 1, 1, 1, 1,
+	0, 18, 18, 18, 18, 16, 16, 6, 6, 8,
+	8, 9, 9, 10, 10, 10, 5, 5, 5, 5,
+	5, 4, 4, 4, 3, 3, 3, 3, 2, 1,
+	1, 1, 1, 1, 1, 1, 1, 14, 14, 14,
+	14, 14, 15, 7, 7, 12, 13, 11, 17,
 }
 var GrowR2 = [...]int{
 
-	0, 1, 2, 1, 3, 1, 3, 1, 3, 1,
-	3, 3, 1, 3, 3, 3, 3, 1, 3, 3,
-	1, 3, 3, 3, 1, 2, 2, 3, 1, 1,
-	1, 1, 1, 1, 1,
+	0, 1, 1, 1, 2, 1, 2, 1, 3, 1,
+	3, 1, 3, 1, 3, 3, 1, 3, 3, 3,
+	3, 1, 3, 3, 1, 3, 3, 3, 1, 3,
+	1, 1, 1, 1, 1, 1, 1, 2, 1, 1,
+	1, 1, 9, 0, 1, 3, 2, 2, 2,
 }
 var GrowChk = [...]int{
 
-	-1000, -10, -6, -7, 7, -8, -9, -5, -4, -3,
-	-2, -1, 34, 33, 18, 4, 5, 6, 38, 39,
-	17, -6, 26, 24, 25, 27, 28, 29, 30, 31,
-	32, 33, 34, 35, 36, 37, -2, 7, -2, -6,
-	-8, -6, -9, -5, -5, -4, -4, -4, -4, -3,
-	-3, -2, -2, -2, 19,
+	-1000, -18, -6, -14, -16, -8, 7, -15, -12, -13,
+	-11, -9, 13, 14, 15, 16, -10, -5, -4, -3,
+	-2, -1, 18, 4, 5, 6, 38, 39, 17, -6,
+	22, -14, -6, 26, 24, 25, 18, -7, -6, 22,
+	22, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+	36, 37, -6, -9, 7, -6, -10, -7, 22, -5,
+	-5, -4, -4, -4, -4, -3, -3, -2, -2, -2,
+	19, 22, -7, 22, -7, 19, -17, 20, 21,
 }
 var GrowDef = [...]int{
 
-	0, -2, 1, 3, 28, 5, 7, 9, 12, 17,
-	20, 24, 0, 0, 0, 29, 30, 31, 32, 33,
-	34, 2, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 25, 28, 26, 0,
-	6, 4, 8, 10, 11, 13, 14, 15, 16, 18,
-	19, 21, 22, 23, 27,
+	0, -2, 1, -2, 3, 7, 30, 38, 39, 40,
+	41, 9, 0, 43, 0, 0, 11, 13, 16, 21,
+	24, 28, 0, 31, 32, 33, 34, 35, 36, 4,
+	37, 6, 0, 0, 0, 0, 43, 0, 44, 46,
+	47, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 10, 30, 8, 12, 0, 45, 14,
+	15, 17, 18, 19, 20, 22, 23, 25, 26, 27,
+	29, 43, 0, 43, 0, 0, 42, 0, 48,
 }
 var GrowTok1 = [...]int{
 
@@ -527,132 +546,173 @@ Growdefault:
 	// dummy call; replaced with literal code
 	switch Grownt {
 
-	case 4:
-		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:30
+	case 5:
+		GrowDollar = GrowS[Growpt-1 : Growpt+1]
+		//line growbar.y:39
 		{
-			GrowVAL.expression = createAssignExpression(GrowDollar[1].identifier, GrowDollar[3].expression)
+			GrowVAL.statement_list = createStatementList(GrowDollar[1].statement)
 		}
 	case 6:
-		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:36
+		GrowDollar = GrowS[Growpt-2 : Growpt+1]
+		//line growbar.y:43
 		{
-			GrowVAL.expression = createBinaryExpression(LOGICAL_OR_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.statement_list = chainStatementList(GrowDollar[1].statement_list, GrowDollar[2].statement)
 		}
 	case 8:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:43
+		//line growbar.y:50
 		{
-			GrowVAL.expression = createBinaryExpression(LOGICAL_AND_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.expression = createAssignExpression(GrowDollar[1].identifier, GrowDollar[3].expression)
 		}
 	case 10:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:50
+		//line growbar.y:56
 		{
-			GrowVAL.expression = createBinaryExpression(EQ_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.expression = createBinaryExpression(LOGICAL_OR_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
 		}
-	case 11:
+	case 12:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:54
+		//line growbar.y:63
 		{
-			GrowVAL.expression = createBinaryExpression(NE_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
-		}
-	case 13:
-		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:61
-		{
-			GrowVAL.expression = createBinaryExpression(GT_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.expression = createBinaryExpression(LOGICAL_AND_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
 		}
 	case 14:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:65
+		//line growbar.y:70
 		{
-			GrowVAL.expression = createBinaryExpression(GE_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.expression = createBinaryExpression(EQ_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
 		}
 	case 15:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:69
+		//line growbar.y:74
 		{
-			GrowVAL.expression = createBinaryExpression(LT_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.expression = createBinaryExpression(NE_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
 		}
-	case 16:
+	case 17:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:73
+		//line growbar.y:81
 		{
-			GrowVAL.expression = createBinaryExpression(LE_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.expression = createBinaryExpression(GT_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
 		}
 	case 18:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:80
+		//line growbar.y:85
 		{
-			GrowVAL.expression = createBinaryExpression(ADD_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.expression = createBinaryExpression(GE_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
 		}
 	case 19:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:84
+		//line growbar.y:89
 		{
-			GrowVAL.expression = createBinaryExpression(SUB_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.expression = createBinaryExpression(LT_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
 		}
-	case 21:
+	case 20:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:91
+		//line growbar.y:93
 		{
-			GrowVAL.expression = createBinaryExpression(MUL_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.expression = createBinaryExpression(LE_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
 		}
 	case 22:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:95
+		//line growbar.y:100
 		{
-			GrowVAL.expression = createBinaryExpression(DIV_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.expression = createBinaryExpression(ADD_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
 		}
 	case 23:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:99
+		//line growbar.y:104
 		{
-			GrowVAL.expression = createBinaryExpression(MOD_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+			GrowVAL.expression = createBinaryExpression(SUB_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
 		}
 	case 25:
-		GrowDollar = GrowS[Growpt-2 : Growpt+1]
-		//line growbar.y:107
-		{
-			GrowVAL.expression = createMinusExpression(GrowDollar[2].expression)
-		}
-	case 26:
-		GrowDollar = GrowS[Growpt-2 : Growpt+1]
+		GrowDollar = GrowS[Growpt-3 : Growpt+1]
 		//line growbar.y:111
 		{
-			fmt.Println(GrowDollar[2].expression)
-			GrowVAL.expression = createAddExpression(GrowDollar[2].expression)
+			GrowVAL.expression = createBinaryExpression(MUL_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+		}
+	case 26:
+		GrowDollar = GrowS[Growpt-3 : Growpt+1]
+		//line growbar.y:115
+		{
+			GrowVAL.expression = createBinaryExpression(DIV_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
 		}
 	case 27:
 		GrowDollar = GrowS[Growpt-3 : Growpt+1]
-		//line growbar.y:118
+		//line growbar.y:119
+		{
+			GrowVAL.expression = createBinaryExpression(MOD_EXPRESSION, GrowDollar[1].expression, GrowDollar[3].expression)
+		}
+	case 29:
+		GrowDollar = GrowS[Growpt-3 : Growpt+1]
+		//line growbar.y:138
 		{
 			GrowVAL.expression = GrowDollar[2].expression
 		}
-	case 28:
+	case 30:
 		GrowDollar = GrowS[Growpt-1 : Growpt+1]
-		//line growbar.y:122
+		//line growbar.y:142
 		{
 			GrowVAL.expression = createIdentifierExpression(GrowDollar[1].identifier)
 		}
-	case 32:
+	case 34:
 		GrowDollar = GrowS[Growpt-1 : Growpt+1]
-		//line growbar.y:129
+		//line growbar.y:149
 		{
 			GrowVAL.expression = createBooleanExpression(true)
 		}
-	case 33:
+	case 35:
 		GrowDollar = GrowS[Growpt-1 : Growpt+1]
-		//line growbar.y:133
+		//line growbar.y:153
 		{
 			GrowVAL.expression = createBooleanExpression(false)
 		}
-	case 34:
+	case 36:
 		GrowDollar = GrowS[Growpt-1 : Growpt+1]
-		//line growbar.y:137
+		//line growbar.y:157
 		{
 			GrowVAL.expression = createNullExpression()
+		}
+	case 37:
+		GrowDollar = GrowS[Growpt-2 : Growpt+1]
+		//line growbar.y:164
+		{
+			GrowVAL.statement = createExpressionStatement(GrowDollar[1].expression)
+		}
+	case 42:
+		GrowDollar = GrowS[Growpt-9 : Growpt+1]
+		//line growbar.y:175
+		{
+			GrowVAL.statement = createForStatement(GrowDollar[3].expression, GrowDollar[5].expression, GrowDollar[7].expression, GrowDollar[9].block)
+		}
+	case 43:
+		GrowDollar = GrowS[Growpt-0 : Growpt+1]
+		//line growbar.y:181
+		{
+			GrowVAL.expression = nil
+		}
+	case 45:
+		GrowDollar = GrowS[Growpt-3 : Growpt+1]
+		//line growbar.y:188
+		{
+			GrowVAL.statement = createReturnStatement(GrowDollar[2].expression)
+		}
+	case 46:
+		GrowDollar = GrowS[Growpt-2 : Growpt+1]
+		//line growbar.y:194
+		{
+			GrowVAL.statement = createBreakStatement()
+		}
+	case 47:
+		GrowDollar = GrowS[Growpt-2 : Growpt+1]
+		//line growbar.y:199
+		{
+			GrowVAL.statement = createContinueStatement()
+		}
+	case 48:
+		GrowDollar = GrowS[Growpt-2 : Growpt+1]
+		//line growbar.y:205
+		{
+			GrowVAL.block = createBlock(nil)
 		}
 	}
 	goto Growstack /* stack new state and value */

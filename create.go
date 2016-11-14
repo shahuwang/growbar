@@ -49,3 +49,62 @@ func createBinaryExpression(
 	//TODO
 	return left
 }
+
+func allocStatement(typ StatementType) *Statement {
+	st := new(Statement)
+	st.typ = typ
+	st.line_number = getCurrentInterpreter().current_line_number
+	return st
+}
+
+func createContinueStatement() *Statement {
+	//TODO
+	return allocStatement(CONTINUE_STATEMENT)
+}
+
+func createBreakStatement() *Statement {
+	// TODO
+	return allocStatement(BREAK_STATEMENT)
+}
+
+func createBlock(st *StatementList) *Block {
+	block := new(Block)
+	block.statement_list = st
+	return block
+}
+
+func createExpressionStatement(exp *Expression) *Statement {
+	st := allocStatement(EXPRESSION_STATEMENT)
+	st.expresion_s = exp
+	return st
+}
+
+func createStatementList(st *Statement) *StatementList {
+	sl := new(StatementList)
+	sl.statement = st
+	return sl
+}
+
+func chainStatementList(sl *StatementList, st *Statement) *StatementList {
+	if sl == nil {
+		return createStatementList(st)
+	}
+	pos := sl
+	for {
+		if pos.next == nil {
+			break
+		}
+		pos = pos.next
+	}
+	return sl
+}
+
+func createForStatement(init *Expression, cond *Expression, post *Expression, block *Block) *Statement {
+	// TODO
+	return allocStatement(FOR_STATEMENT)
+}
+
+func createReturnStatement(expression *Expression) *Statement {
+	// TODO
+	return allocStatement(RETURN_STATEMENT)
+}

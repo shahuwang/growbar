@@ -123,7 +123,7 @@ func (ipt *Interpreter) ExecuteGlobalStatement(env *LocalEnvironment, statement 
 	if env == nil {
 		runtimeError(statement.line_number, GLOBAL_STATEMENT_IN_TOPLEVEL_ERR)
 	}
-	pos = statement.u.(GlobalStatement).identifier_list
+	pos = statement.identifier_list
 	for {
 		if pos == nil {
 			break
