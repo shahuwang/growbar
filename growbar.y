@@ -1,7 +1,6 @@
 %{
 package main
 import(
- "fmt"
 )
 %}
 %union {
@@ -131,7 +130,6 @@ relational_expression
     }
     | relational_expression LT additive_expression
     {
-        fmt.Println("====================")
         $$ = createBinaryExpression(LT_EXPRESSION, $1, $3)
     }
     | relational_expression LE additive_expression
