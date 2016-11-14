@@ -1,7 +1,7 @@
 %{
 package main
 import(
- /* "fmt" */
+ "fmt"
 )
 %}
 %union {
@@ -10,6 +10,10 @@ import(
     statement *Statement
     statement_list *StatementList
     block *Block
+    identifier_list *IdentifierList
+    elsif *Elsif
+    argument_list *ArgumentList
+    parameter_list *ParameterList
 }
 
 %token <expression> INT_LITERAL
@@ -24,15 +28,55 @@ import(
                 logical_or_expression logical_and_expression  equality_expression
 
 %type <statement> continue_statement return_statement break_statement statement
-                for_statement
+                for_statement global_statement if_statement while_statement
 %type <statement_list> statement_list
 %type <block> block
+%type <identifier_list> identifier_list
+%type <elsif> elsif elsif_list
+%type <argument_list> argument_list
+%type <parameter_list> parameter_list
 %%
 translation_unit
-    : expression
+    : definition_or_statement
+    | translation_unit definition_or_statement
+    ;
+definition_or_statement
+    : function_definition
     | statement
-    | statement_list
-    | translation_unit expression
+    {
+        ipt := getCurrentInterpreter()
+        ipt.statement_list = chainStatementList(ipt.statement_list, $1)
+    }
+    ;
+function_definition
+    : FUNCTION IDENTIFIER LP parameter_list RP block
+    {
+        functionDefine($2, $4, $6)
+    }
+    | FUNCTION IDENTIFIER LP RP block
+    {
+        functionDefine($2, nil, $5);
+    }
+    ;
+parameter_list
+    : IDENTIFIER
+    {
+        $$ = createParameter($1)
+    }
+    | parameter_list COMMA IDENTIFIER
+    {
+        $$ = chainParameter($1, $3);
+    }
+    ;
+argument_list
+    : expression
+    {
+        $$ = createArgumentList($1)
+    }
+    | argument_list COMMA expression
+    {
+        $$ = chainArgumentList($1, $3)
+    }
     ;
 statement_list
     : statement
@@ -87,6 +131,7 @@ relational_expression
     }
     | relational_expression LT additive_expression
     {
+        fmt.Println("====================")
         $$ = createBinaryExpression(LT_EXPRESSION, $1, $3)
     }
     | relational_expression LE additive_expression
@@ -123,18 +168,25 @@ multiplicative_expression
 
 unary_expression
     : primary_expression
-    /* | SUB unary_expression */
-    /* { */
-    /*     $$ = createMinusExpression($2) */  
-    /* } */
-    /* | ADD unary_expression */
-    /* { */
-    /*     fmt.Println($2) */
-    /*     $$ = createAddExpression($2) */ 
-    /* } */
+    | SUB unary_expression 
+    { 
+        $$ = createMinusExpression($2)   
+    } 
+    | ADD unary_expression 
+    { 
+        $$ = createAddExpression($2)  
+    } 
     ;
 primary_expression
-    : LP expression RP
+    : IDENTIFIER LP argument_list RP
+    {
+        $$ = createFunctionCallExpression($1, $3)
+    }
+    | IDENTIFIER LP RP
+    {
+        $$ = createFunctionCallExpression($1, nil)
+    }
+    | LP expression RP
     {
         $$ = $2
     }
@@ -164,10 +216,65 @@ statement
     {
         $$ = createExpressionStatement($1);
     }
+    | global_statement
+    | if_statement
+    | while_statement
     | for_statement
     | return_statement
     | break_statement
     | continue_statement
+    ;
+global_statement
+    : GLOBAL_T identifier_list SEMICOLON
+    {
+        $$ = createGlobalStatement($2);
+    }
+identifier_list
+    : IDENTIFIER
+    {
+        $$ = createGlobalIdentifier($1)
+    }
+    | identifier_list COMMA IDENTIFIER
+    {
+        $$ = chainIdentifier($1, $3)
+    }
+    ;
+if_statement
+    : IF LP expression RP block
+    {
+        $$ = createIfStatement($3, $5, nil, nil)
+    }
+    | IF LP expression RP block ELSE block
+    {
+        $$ = createIfStatement($3, $5, nil, $7)
+    }
+    | IF LP expression RP block elsif_list
+    {
+        $$ = createIfStatement($3, $5, $6, nil)   
+    }
+    | IF LP expression RP block elsif_list ELSE block
+    {
+        $$ = createIfStatement($3, $5, $6, $8)
+    }
+    ;
+elsif_list
+    : elsif
+    | elsif_list elsif
+    {
+        $$ = chainElsifList($1, $2)
+    }
+    ;
+elsif
+    : ELSIF LP expression RP block
+    {
+        $$ = createElsif($3, $5)
+    }
+    ;
+while_statement
+    : WHILE LP expression RP block
+    {
+        $$ = createWhileStatement($3, $5)
+    }
     ;
 for_statement
     : FOR LP expression_opt SEMICOLON expression_opt SEMICOLON
@@ -199,9 +306,13 @@ continue_statement
     {
         $$ = createContinueStatement();
     }
-
+    ;
 block
-    : LC RC
+    : LC statement_list RC
+    {
+        $$ = createBlock($2)
+    }
+    | LC RC
     {
         $$ = createBlock(nil);
     }

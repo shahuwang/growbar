@@ -108,3 +108,67 @@ func createReturnStatement(expression *Expression) *Statement {
 	// TODO
 	return allocStatement(RETURN_STATEMENT)
 }
+
+func createGlobalStatement(identifier_list *IdentifierList) *Statement {
+	// TODO
+	return allocStatement(GLOBAL_STATEMENT)
+}
+
+func createIfStatement(cond *Expression, then *Block, elsiflist *Elsif, elseBlock *Block) *Statement {
+	// TODO
+	return allocStatement(IF_STATEMENT)
+}
+
+func createWhileStatement(cond *Expression, block *Block) *Statement {
+	//TODO
+	return allocStatement(WHILE_STATEMENT)
+}
+
+func createGlobalIdentifier(identifier string) *IdentifierList {
+	// TODO
+	return new(IdentifierList)
+}
+
+func chainIdentifier(il *IdentifierList, identifier string) *IdentifierList {
+	// TODO
+	return new(IdentifierList)
+}
+
+func chainElsifList(list *Elsif, add *Elsif) *Elsif {
+	// TODO
+	return new(Elsif)
+}
+
+func createElsif(expr *Expression, block *Block) *Elsif {
+	// TODO
+	return new(Elsif)
+}
+
+func createArgumentList(expr *Expression) *ArgumentList {
+	// TODO
+	return new(ArgumentList)
+}
+
+func chainArgumentList(list *ArgumentList, expr *Expression) *ArgumentList {
+	//TODO
+	return new(ArgumentList)
+}
+
+func createParameter(identifier string) *ParameterList {
+	// TODO
+	return new(ParameterList)
+}
+
+func chainParameter(list *ParameterList, identifier string) *ParameterList {
+	// TODO
+	return new(ParameterList)
+}
+
+func createFunctionCallExpression(funcName string, argument *ArgumentList) *Expression {
+	// TODO
+	return new(Expression)
+}
+
+func functionDefine(identifier string, pl *ParameterList, block *Block) {
+	// TODO
+}

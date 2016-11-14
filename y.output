@@ -2,939 +2,1557 @@
 state 0
 	$accept: .translation_unit $end 
 
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 6
-	FOR  shift 12
-	RETURN_T  shift 13
-	BREAK  shift 14
-	CONTINUE  shift 15
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	FUNCTION  shift 5
+	IF  shift 17
+	WHILE  shift 18
+	FOR  shift 19
+	RETURN_T  shift 20
+	BREAK  shift 21
+	CONTINUE  shift 22
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	GLOBAL_T  shift 16
 	.  error
 
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 17
-	expression  goto 2
-	logical_or_expression  goto 5
-	logical_and_expression  goto 11
-	equality_expression  goto 16
-	continue_statement  goto 10
-	return_statement  goto 8
-	break_statement  goto 9
-	statement  goto 3
-	for_statement  goto 7
-	statement_list  goto 4
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 6
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+	continue_statement  goto 13
+	return_statement  goto 11
+	break_statement  goto 12
+	statement  goto 4
+	for_statement  goto 10
+	global_statement  goto 7
+	if_statement  goto 8
+	while_statement  goto 9
 	translation_unit  goto 1
+	definition_or_statement  goto 2
+	function_definition  goto 3
 
 state 1
 	$accept:  translation_unit.$end 
-	translation_unit:  translation_unit.expression 
+	translation_unit:  translation_unit.definition_or_statement 
 
 	$end  accept
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 6
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	FUNCTION  shift 5
+	IF  shift 17
+	WHILE  shift 18
+	FOR  shift 19
+	RETURN_T  shift 20
+	BREAK  shift 21
+	CONTINUE  shift 22
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	GLOBAL_T  shift 16
 	.  error
 
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 17
-	expression  goto 29
-	logical_or_expression  goto 5
-	logical_and_expression  goto 11
-	equality_expression  goto 16
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 6
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+	continue_statement  goto 13
+	return_statement  goto 11
+	break_statement  goto 12
+	statement  goto 4
+	for_statement  goto 10
+	global_statement  goto 7
+	if_statement  goto 8
+	while_statement  goto 9
+	definition_or_statement  goto 39
+	function_definition  goto 3
 
 state 2
-	translation_unit:  expression.    (1)
-	statement:  expression.SEMICOLON 
+	translation_unit:  definition_or_statement.    (1)
 
-	SEMICOLON  shift 30
-	.  reduce 1 (src line 31)
+	.  reduce 1 (src line 39)
 
 
- 3: reduce/reduce conflict  (red'ns 2 and 5) on $end
- 3: reduce/reduce conflict  (red'ns 2 and 5) on INT_LITERAL
- 3: reduce/reduce conflict  (red'ns 2 and 5) on DOUBLE_LITERAL
- 3: reduce/reduce conflict  (red'ns 2 and 5) on STRING_LITERAL
- 3: reduce/reduce conflict  (red'ns 2 and 5) on IDENTIFIER
- 3: reduce/reduce conflict  (red'ns 2 and 5) on NULL_T
- 3: reduce/reduce conflict  (red'ns 2 and 5) on LP
- 3: reduce/reduce conflict  (red'ns 2 and 5) on TRUE_T
- 3: reduce/reduce conflict  (red'ns 2 and 5) on FALSE_T
 state 3
-	translation_unit:  statement.    (2)
-	statement_list:  statement.    (5)
+	definition_or_statement:  function_definition.    (3)
 
-	FOR  reduce 5 (src line 37)
-	RETURN_T  reduce 5 (src line 37)
-	BREAK  reduce 5 (src line 37)
-	CONTINUE  reduce 5 (src line 37)
-	.  reduce 2 (src line 33)
+	.  reduce 3 (src line 43)
 
 
-4: shift/reduce conflict (shift 23(0), red'n 3(0)) on INT_LITERAL
-4: shift/reduce conflict (shift 24(0), red'n 3(0)) on DOUBLE_LITERAL
-4: shift/reduce conflict (shift 25(0), red'n 3(0)) on STRING_LITERAL
-4: shift/reduce conflict (shift 6(0), red'n 3(0)) on IDENTIFIER
-4: shift/reduce conflict (shift 28(0), red'n 3(0)) on NULL_T
-4: shift/reduce conflict (shift 22(0), red'n 3(0)) on LP
-4: shift/reduce conflict (shift 26(0), red'n 3(0)) on TRUE_T
-4: shift/reduce conflict (shift 27(0), red'n 3(0)) on FALSE_T
 state 4
-	translation_unit:  statement_list.    (3)
-	statement_list:  statement_list.statement 
+	definition_or_statement:  statement.    (4)
 
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 6
-	FOR  shift 12
-	RETURN_T  shift 13
-	BREAK  shift 14
-	CONTINUE  shift 15
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  reduce 3 (src line 34)
+	.  reduce 4 (src line 45)
 
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 17
-	expression  goto 32
-	logical_or_expression  goto 5
-	logical_and_expression  goto 11
-	equality_expression  goto 16
-	continue_statement  goto 10
-	return_statement  goto 8
-	break_statement  goto 9
-	statement  goto 31
-	for_statement  goto 7
 
 state 5
-	expression:  logical_or_expression.    (7)
-	logical_or_expression:  logical_or_expression.LOGICAL_OR logical_and_expression 
+	function_definition:  FUNCTION.IDENTIFIER LP parameter_list RP block 
+	function_definition:  FUNCTION.IDENTIFIER LP RP block 
 
-	LOGICAL_OR  shift 33
-	.  reduce 7 (src line 47)
+	IDENTIFIER  shift 40
+	.  error
 
 
 state 6
-	expression:  IDENTIFIER.ASSIGN expression 
-	primary_expression:  IDENTIFIER.    (30)
+	statement:  expression.SEMICOLON 
 
-	ASSIGN  shift 34
-	.  reduce 30 (src line 141)
+	SEMICOLON  shift 41
+	.  error
 
 
 state 7
-	statement:  for_statement.    (38)
+	statement:  global_statement.    (48)
 
-	.  reduce 38 (src line 167)
+	.  reduce 48 (src line 219)
 
 
 state 8
-	statement:  return_statement.    (39)
+	statement:  if_statement.    (49)
 
-	.  reduce 39 (src line 168)
+	.  reduce 49 (src line 220)
 
 
 state 9
-	statement:  break_statement.    (40)
+	statement:  while_statement.    (50)
 
-	.  reduce 40 (src line 169)
+	.  reduce 50 (src line 221)
 
 
 state 10
-	statement:  continue_statement.    (41)
+	statement:  for_statement.    (51)
 
-	.  reduce 41 (src line 170)
+	.  reduce 51 (src line 222)
 
 
 state 11
-	logical_or_expression:  logical_and_expression.    (9)
-	logical_and_expression:  logical_and_expression.LOGICAL_AND equality_expression 
+	statement:  return_statement.    (52)
 
-	LOGICAL_AND  shift 35
-	.  reduce 9 (src line 53)
+	.  reduce 52 (src line 223)
 
 
 state 12
-	for_statement:  FOR.LP expression_opt SEMICOLON expression_opt SEMICOLON expression_opt RP block 
+	statement:  break_statement.    (53)
 
-	LP  shift 36
-	.  error
+	.  reduce 53 (src line 224)
 
 
 state 13
-	return_statement:  RETURN_T.expression_opt SEMICOLON 
-	expression_opt: .    (43)
+	statement:  continue_statement.    (54)
 
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 6
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  reduce 43 (src line 179)
+	.  reduce 54 (src line 225)
 
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 17
-	expression  goto 38
-	expression_opt  goto 37
-	logical_or_expression  goto 5
-	logical_and_expression  goto 11
-	equality_expression  goto 16
 
 state 14
-	break_statement:  BREAK.SEMICOLON 
+	expression:  logical_or_expression.    (13)
+	logical_or_expression:  logical_or_expression.LOGICAL_OR logical_and_expression 
 
-	SEMICOLON  shift 39
-	.  error
+	LOGICAL_OR  shift 42
+	.  reduce 13 (src line 91)
 
 
 state 15
-	continue_statement:  CONTINUE.SEMICOLON 
+	expression:  IDENTIFIER.ASSIGN expression 
+	primary_expression:  IDENTIFIER.LP argument_list RP 
+	primary_expression:  IDENTIFIER.LP RP 
+	primary_expression:  IDENTIFIER.    (40)
 
-	SEMICOLON  shift 40
-	.  error
+	LP  shift 44
+	ASSIGN  shift 43
+	.  reduce 40 (src line 193)
 
 
 state 16
-	logical_and_expression:  equality_expression.    (11)
-	equality_expression:  equality_expression.EQ relational_expression 
-	equality_expression:  equality_expression.NE relational_expression 
+	global_statement:  GLOBAL_T.identifier_list SEMICOLON 
 
-	EQ  shift 41
-	NE  shift 42
-	.  reduce 11 (src line 60)
+	IDENTIFIER  shift 46
+	.  error
 
+	identifier_list  goto 45
 
 state 17
-	equality_expression:  relational_expression.    (13)
-	relational_expression:  relational_expression.GT additive_expression 
-	relational_expression:  relational_expression.GE additive_expression 
-	relational_expression:  relational_expression.LT additive_expression 
-	relational_expression:  relational_expression.LE additive_expression 
+	if_statement:  IF.LP expression RP block 
+	if_statement:  IF.LP expression RP block ELSE block 
+	if_statement:  IF.LP expression RP block elsif_list 
+	if_statement:  IF.LP expression RP block elsif_list ELSE block 
 
-	GT  shift 43
-	GE  shift 44
-	LT  shift 45
-	LE  shift 46
-	.  reduce 13 (src line 67)
+	LP  shift 47
+	.  error
 
 
 state 18
-	relational_expression:  additive_expression.    (16)
-	additive_expression:  additive_expression.ADD multiplicative_expression 
-	additive_expression:  additive_expression.SUB multiplicative_expression 
+	while_statement:  WHILE.LP expression RP block 
 
-	ADD  shift 47
-	SUB  shift 48
-	.  reduce 16 (src line 78)
+	LP  shift 48
+	.  error
 
 
 state 19
-	additive_expression:  multiplicative_expression.    (21)
-	multiplicative_expression:  multiplicative_expression.MUL unary_expression 
-	multiplicative_expression:  multiplicative_expression.DIV unary_expression 
-	multiplicative_expression:  multiplicative_expression.MOD unary_expression 
+	for_statement:  FOR.LP expression_opt SEMICOLON expression_opt SEMICOLON expression_opt RP block 
 
-	MUL  shift 49
-	DIV  shift 50
-	MOD  shift 51
-	.  reduce 21 (src line 97)
+	LP  shift 49
+	.  error
 
 
 state 20
-	multiplicative_expression:  unary_expression.    (24)
+	return_statement:  RETURN_T.expression_opt SEMICOLON 
+	expression_opt: .    (67)
 
-	.  reduce 24 (src line 108)
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  reduce 67 (src line 286)
 
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 51
+	expression_opt  goto 50
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
 
 state 21
-	unary_expression:  primary_expression.    (28)
+	break_statement:  BREAK.SEMICOLON 
 
-	.  reduce 28 (src line 124)
+	SEMICOLON  shift 52
+	.  error
 
 
 state 22
-	primary_expression:  LP.expression RP 
+	continue_statement:  CONTINUE.SEMICOLON 
 
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 6
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
+	SEMICOLON  shift 53
 	.  error
 
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 17
-	expression  goto 52
-	logical_or_expression  goto 5
-	logical_and_expression  goto 11
-	equality_expression  goto 16
 
 state 23
-	primary_expression:  INT_LITERAL.    (31)
+	logical_or_expression:  logical_and_expression.    (15)
+	logical_and_expression:  logical_and_expression.LOGICAL_AND equality_expression 
 
-	.  reduce 31 (src line 145)
+	LOGICAL_AND  shift 54
+	.  reduce 15 (src line 97)
 
 
 state 24
-	primary_expression:  DOUBLE_LITERAL.    (32)
-
-	.  reduce 32 (src line 146)
-
-
-state 25
-	primary_expression:  STRING_LITERAL.    (33)
-
-	.  reduce 33 (src line 147)
-
-
-state 26
-	primary_expression:  TRUE_T.    (34)
-
-	.  reduce 34 (src line 148)
-
-
-state 27
-	primary_expression:  FALSE_T.    (35)
-
-	.  reduce 35 (src line 152)
-
-
-state 28
-	primary_expression:  NULL_T.    (36)
-
-	.  reduce 36 (src line 156)
-
-
-state 29
-	translation_unit:  translation_unit expression.    (4)
-
-	.  reduce 4 (src line 35)
-
-
-state 30
-	statement:  expression SEMICOLON.    (37)
-
-	.  reduce 37 (src line 162)
-
-
-state 31
-	statement_list:  statement_list statement.    (6)
-
-	.  reduce 6 (src line 42)
-
-
-state 32
-	statement:  expression.SEMICOLON 
-
-	SEMICOLON  shift 30
-	.  error
-
-
-state 33
-	logical_or_expression:  logical_or_expression LOGICAL_OR.logical_and_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 17
-	logical_and_expression  goto 53
-	equality_expression  goto 16
-
-state 34
-	expression:  IDENTIFIER ASSIGN.expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 6
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 17
-	expression  goto 55
-	logical_or_expression  goto 5
-	logical_and_expression  goto 11
-	equality_expression  goto 16
-
-state 35
-	logical_and_expression:  logical_and_expression LOGICAL_AND.equality_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 17
-	equality_expression  goto 56
-
-state 36
-	for_statement:  FOR LP.expression_opt SEMICOLON expression_opt SEMICOLON expression_opt RP block 
-	expression_opt: .    (43)
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 6
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  reduce 43 (src line 179)
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 17
-	expression  goto 38
-	expression_opt  goto 57
-	logical_or_expression  goto 5
-	logical_and_expression  goto 11
-	equality_expression  goto 16
-
-state 37
-	return_statement:  RETURN_T expression_opt.SEMICOLON 
-
-	SEMICOLON  shift 58
-	.  error
-
-
-state 38
-	expression_opt:  expression.    (44)
-
-	.  reduce 44 (src line 184)
-
-
-state 39
-	break_statement:  BREAK SEMICOLON.    (46)
-
-	.  reduce 46 (src line 192)
-
-
-state 40
-	continue_statement:  CONTINUE SEMICOLON.    (47)
-
-	.  reduce 47 (src line 197)
-
-
-state 41
-	equality_expression:  equality_expression EQ.relational_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 59
-
-state 42
-	equality_expression:  equality_expression NE.relational_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 60
-
-state 43
-	relational_expression:  relational_expression GT.additive_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 61
-
-state 44
-	relational_expression:  relational_expression GE.additive_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 62
-
-state 45
-	relational_expression:  relational_expression LT.additive_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 63
-
-state 46
-	relational_expression:  relational_expression LE.additive_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 64
-
-state 47
-	additive_expression:  additive_expression ADD.multiplicative_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 65
-
-state 48
-	additive_expression:  additive_expression SUB.multiplicative_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 66
-
-state 49
-	multiplicative_expression:  multiplicative_expression MUL.unary_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 67
-
-state 50
-	multiplicative_expression:  multiplicative_expression DIV.unary_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 68
-
-state 51
-	multiplicative_expression:  multiplicative_expression MOD.unary_expression 
-
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 54
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  error
-
-	primary_expression  goto 21
-	unary_expression  goto 69
-
-state 52
-	primary_expression:  LP expression.RP 
-
-	RP  shift 70
-	.  error
-
-
-state 53
-	logical_or_expression:  logical_or_expression LOGICAL_OR logical_and_expression.    (10)
-	logical_and_expression:  logical_and_expression.LOGICAL_AND equality_expression 
-
-	LOGICAL_AND  shift 35
-	.  reduce 10 (src line 55)
-
-
-state 54
-	primary_expression:  IDENTIFIER.    (30)
-
-	.  reduce 30 (src line 141)
-
-
-state 55
-	expression:  IDENTIFIER ASSIGN expression.    (8)
-
-	.  reduce 8 (src line 49)
-
-
-state 56
-	logical_and_expression:  logical_and_expression LOGICAL_AND equality_expression.    (12)
+	logical_and_expression:  equality_expression.    (17)
 	equality_expression:  equality_expression.EQ relational_expression 
 	equality_expression:  equality_expression.NE relational_expression 
 
-	EQ  shift 41
-	NE  shift 42
-	.  reduce 12 (src line 62)
+	EQ  shift 55
+	NE  shift 56
+	.  reduce 17 (src line 104)
 
 
-state 57
-	for_statement:  FOR LP expression_opt.SEMICOLON expression_opt SEMICOLON expression_opt RP block 
+state 25
+	equality_expression:  relational_expression.    (19)
+	relational_expression:  relational_expression.GT additive_expression 
+	relational_expression:  relational_expression.GE additive_expression 
+	relational_expression:  relational_expression.LT additive_expression 
+	relational_expression:  relational_expression.LE additive_expression 
 
-	SEMICOLON  shift 71
+	GT  shift 57
+	GE  shift 58
+	LT  shift 59
+	LE  shift 60
+	.  reduce 19 (src line 111)
+
+
+state 26
+	relational_expression:  additive_expression.    (22)
+	additive_expression:  additive_expression.ADD multiplicative_expression 
+	additive_expression:  additive_expression.SUB multiplicative_expression 
+
+	ADD  shift 61
+	SUB  shift 62
+	.  reduce 22 (src line 122)
+
+
+state 27
+	additive_expression:  multiplicative_expression.    (27)
+	multiplicative_expression:  multiplicative_expression.MUL unary_expression 
+	multiplicative_expression:  multiplicative_expression.DIV unary_expression 
+	multiplicative_expression:  multiplicative_expression.MOD unary_expression 
+
+	MUL  shift 63
+	DIV  shift 64
+	MOD  shift 65
+	.  reduce 27 (src line 142)
+
+
+state 28
+	multiplicative_expression:  unary_expression.    (30)
+
+	.  reduce 30 (src line 153)
+
+
+state 29
+	unary_expression:  primary_expression.    (34)
+
+	.  reduce 34 (src line 169)
+
+
+state 30
+	unary_expression:  SUB.unary_expression 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 66
+
+state 31
+	unary_expression:  ADD.unary_expression 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 68
+
+state 32
+	primary_expression:  LP.expression RP 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 69
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+
+state 33
+	primary_expression:  INT_LITERAL.    (41)
+
+	.  reduce 41 (src line 197)
+
+
+state 34
+	primary_expression:  DOUBLE_LITERAL.    (42)
+
+	.  reduce 42 (src line 198)
+
+
+state 35
+	primary_expression:  STRING_LITERAL.    (43)
+
+	.  reduce 43 (src line 199)
+
+
+state 36
+	primary_expression:  TRUE_T.    (44)
+
+	.  reduce 44 (src line 200)
+
+
+state 37
+	primary_expression:  FALSE_T.    (45)
+
+	.  reduce 45 (src line 204)
+
+
+state 38
+	primary_expression:  NULL_T.    (46)
+
+	.  reduce 46 (src line 208)
+
+
+state 39
+	translation_unit:  translation_unit definition_or_statement.    (2)
+
+	.  reduce 2 (src line 41)
+
+
+state 40
+	function_definition:  FUNCTION IDENTIFIER.LP parameter_list RP block 
+	function_definition:  FUNCTION IDENTIFIER.LP RP block 
+
+	LP  shift 70
 	.  error
 
 
+state 41
+	statement:  expression SEMICOLON.    (47)
+
+	.  reduce 47 (src line 214)
+
+
+state 42
+	logical_or_expression:  logical_or_expression LOGICAL_OR.logical_and_expression 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	logical_and_expression  goto 71
+	equality_expression  goto 24
+
+state 43
+	expression:  IDENTIFIER ASSIGN.expression 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 72
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+
+state 44
+	primary_expression:  IDENTIFIER LP.argument_list RP 
+	primary_expression:  IDENTIFIER LP.RP 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	NULL_T  shift 38
+	LP  shift 32
+	RP  shift 74
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 75
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+	argument_list  goto 73
+
+state 45
+	global_statement:  GLOBAL_T identifier_list.SEMICOLON 
+	identifier_list:  identifier_list.COMMA IDENTIFIER 
+
+	SEMICOLON  shift 76
+	COMMA  shift 77
+	.  error
+
+
+state 46
+	identifier_list:  IDENTIFIER.    (56)
+
+	.  reduce 56 (src line 232)
+
+
+state 47
+	if_statement:  IF LP.expression RP block 
+	if_statement:  IF LP.expression RP block ELSE block 
+	if_statement:  IF LP.expression RP block elsif_list 
+	if_statement:  IF LP.expression RP block elsif_list ELSE block 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 78
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+
+state 48
+	while_statement:  WHILE LP.expression RP block 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 79
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+
+state 49
+	for_statement:  FOR LP.expression_opt SEMICOLON expression_opt SEMICOLON expression_opt RP block 
+	expression_opt: .    (67)
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  reduce 67 (src line 286)
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 51
+	expression_opt  goto 80
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+
+state 50
+	return_statement:  RETURN_T expression_opt.SEMICOLON 
+
+	SEMICOLON  shift 81
+	.  error
+
+
+state 51
+	expression_opt:  expression.    (68)
+
+	.  reduce 68 (src line 291)
+
+
+state 52
+	break_statement:  BREAK SEMICOLON.    (70)
+
+	.  reduce 70 (src line 299)
+
+
+state 53
+	continue_statement:  CONTINUE SEMICOLON.    (71)
+
+	.  reduce 71 (src line 304)
+
+
+state 54
+	logical_and_expression:  logical_and_expression LOGICAL_AND.equality_expression 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	equality_expression  goto 82
+
+state 55
+	equality_expression:  equality_expression EQ.relational_expression 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 83
+
+state 56
+	equality_expression:  equality_expression NE.relational_expression 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 84
+
+state 57
+	relational_expression:  relational_expression GT.additive_expression 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 85
+
 state 58
-	return_statement:  RETURN_T expression_opt SEMICOLON.    (45)
+	relational_expression:  relational_expression GE.additive_expression 
 
-	.  reduce 45 (src line 186)
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
 
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 86
 
 state 59
-	equality_expression:  equality_expression EQ relational_expression.    (14)
-	relational_expression:  relational_expression.GT additive_expression 
-	relational_expression:  relational_expression.GE additive_expression 
-	relational_expression:  relational_expression.LT additive_expression 
-	relational_expression:  relational_expression.LE additive_expression 
+	relational_expression:  relational_expression LT.additive_expression 
 
-	GT  shift 43
-	GE  shift 44
-	LT  shift 45
-	LE  shift 46
-	.  reduce 14 (src line 69)
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
 
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 87
 
 state 60
-	equality_expression:  equality_expression NE relational_expression.    (15)
-	relational_expression:  relational_expression.GT additive_expression 
-	relational_expression:  relational_expression.GE additive_expression 
-	relational_expression:  relational_expression.LT additive_expression 
-	relational_expression:  relational_expression.LE additive_expression 
+	relational_expression:  relational_expression LE.additive_expression 
 
-	GT  shift 43
-	GE  shift 44
-	LT  shift 45
-	LE  shift 46
-	.  reduce 15 (src line 73)
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
 
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 88
 
 state 61
-	relational_expression:  relational_expression GT additive_expression.    (17)
-	additive_expression:  additive_expression.ADD multiplicative_expression 
-	additive_expression:  additive_expression.SUB multiplicative_expression 
+	additive_expression:  additive_expression ADD.multiplicative_expression 
 
-	ADD  shift 47
-	SUB  shift 48
-	.  reduce 17 (src line 80)
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
 
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 89
 
 state 62
-	relational_expression:  relational_expression GE additive_expression.    (18)
-	additive_expression:  additive_expression.ADD multiplicative_expression 
-	additive_expression:  additive_expression.SUB multiplicative_expression 
+	additive_expression:  additive_expression SUB.multiplicative_expression 
 
-	ADD  shift 47
-	SUB  shift 48
-	.  reduce 18 (src line 84)
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
 
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 90
 
 state 63
-	relational_expression:  relational_expression LT additive_expression.    (19)
-	additive_expression:  additive_expression.ADD multiplicative_expression 
-	additive_expression:  additive_expression.SUB multiplicative_expression 
+	multiplicative_expression:  multiplicative_expression MUL.unary_expression 
 
-	ADD  shift 47
-	SUB  shift 48
-	.  reduce 19 (src line 88)
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
 
+	primary_expression  goto 29
+	unary_expression  goto 91
 
 state 64
-	relational_expression:  relational_expression LE additive_expression.    (20)
-	additive_expression:  additive_expression.ADD multiplicative_expression 
-	additive_expression:  additive_expression.SUB multiplicative_expression 
+	multiplicative_expression:  multiplicative_expression DIV.unary_expression 
 
-	ADD  shift 47
-	SUB  shift 48
-	.  reduce 20 (src line 92)
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
 
+	primary_expression  goto 29
+	unary_expression  goto 92
 
 state 65
-	additive_expression:  additive_expression ADD multiplicative_expression.    (22)
-	multiplicative_expression:  multiplicative_expression.MUL unary_expression 
-	multiplicative_expression:  multiplicative_expression.DIV unary_expression 
-	multiplicative_expression:  multiplicative_expression.MOD unary_expression 
+	multiplicative_expression:  multiplicative_expression MOD.unary_expression 
 
-	MUL  shift 49
-	DIV  shift 50
-	MOD  shift 51
-	.  reduce 22 (src line 99)
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 67
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
 
+	primary_expression  goto 29
+	unary_expression  goto 93
 
 state 66
-	additive_expression:  additive_expression SUB multiplicative_expression.    (23)
-	multiplicative_expression:  multiplicative_expression.MUL unary_expression 
-	multiplicative_expression:  multiplicative_expression.DIV unary_expression 
-	multiplicative_expression:  multiplicative_expression.MOD unary_expression 
+	unary_expression:  SUB unary_expression.    (35)
 
-	MUL  shift 49
-	DIV  shift 50
-	MOD  shift 51
-	.  reduce 23 (src line 103)
+	.  reduce 35 (src line 171)
 
 
 state 67
-	multiplicative_expression:  multiplicative_expression MUL unary_expression.    (25)
+	primary_expression:  IDENTIFIER.LP argument_list RP 
+	primary_expression:  IDENTIFIER.LP RP 
+	primary_expression:  IDENTIFIER.    (40)
 
-	.  reduce 25 (src line 110)
+	LP  shift 44
+	.  reduce 40 (src line 193)
 
 
 state 68
-	multiplicative_expression:  multiplicative_expression DIV unary_expression.    (26)
+	unary_expression:  ADD unary_expression.    (36)
 
-	.  reduce 26 (src line 114)
+	.  reduce 36 (src line 175)
 
 
 state 69
-	multiplicative_expression:  multiplicative_expression MOD unary_expression.    (27)
+	primary_expression:  LP expression.RP 
 
-	.  reduce 27 (src line 118)
+	RP  shift 94
+	.  error
 
 
 state 70
-	primary_expression:  LP expression RP.    (29)
+	function_definition:  FUNCTION IDENTIFIER LP.parameter_list RP block 
+	function_definition:  FUNCTION IDENTIFIER LP.RP block 
 
-	.  reduce 29 (src line 136)
+	IDENTIFIER  shift 97
+	RP  shift 96
+	.  error
 
+	parameter_list  goto 95
 
 state 71
-	for_statement:  FOR LP expression_opt SEMICOLON.expression_opt SEMICOLON expression_opt RP block 
-	expression_opt: .    (43)
+	logical_or_expression:  logical_or_expression LOGICAL_OR logical_and_expression.    (16)
+	logical_and_expression:  logical_and_expression.LOGICAL_AND equality_expression 
 
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 6
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  reduce 43 (src line 179)
+	LOGICAL_AND  shift 54
+	.  reduce 16 (src line 99)
 
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 17
-	expression  goto 38
-	expression_opt  goto 72
-	logical_or_expression  goto 5
-	logical_and_expression  goto 11
-	equality_expression  goto 16
 
 state 72
-	for_statement:  FOR LP expression_opt SEMICOLON expression_opt.SEMICOLON expression_opt RP block 
+	expression:  IDENTIFIER ASSIGN expression.    (14)
 
-	SEMICOLON  shift 73
-	.  error
+	.  reduce 14 (src line 93)
 
 
 state 73
-	for_statement:  FOR LP expression_opt SEMICOLON expression_opt SEMICOLON.expression_opt RP block 
-	expression_opt: .    (43)
+	argument_list:  argument_list.COMMA expression 
+	primary_expression:  IDENTIFIER LP argument_list.RP 
 
-	INT_LITERAL  shift 23
-	DOUBLE_LITERAL  shift 24
-	STRING_LITERAL  shift 25
-	IDENTIFIER  shift 6
-	NULL_T  shift 28
-	LP  shift 22
-	TRUE_T  shift 26
-	FALSE_T  shift 27
-	.  reduce 43 (src line 179)
+	RP  shift 99
+	COMMA  shift 98
+	.  error
 
-	primary_expression  goto 21
-	unary_expression  goto 20
-	multiplicative_expression  goto 19
-	additive_expression  goto 18
-	relational_expression  goto 17
-	expression  goto 38
-	expression_opt  goto 74
-	logical_or_expression  goto 5
-	logical_and_expression  goto 11
-	equality_expression  goto 16
 
 state 74
-	for_statement:  FOR LP expression_opt SEMICOLON expression_opt SEMICOLON expression_opt.RP block 
+	primary_expression:  IDENTIFIER LP RP.    (38)
 
-	RP  shift 75
-	.  error
+	.  reduce 38 (src line 185)
 
 
 state 75
-	for_statement:  FOR LP expression_opt SEMICOLON expression_opt SEMICOLON expression_opt RP.block 
+	argument_list:  expression.    (9)
 
-	LC  shift 77
-	.  error
+	.  reduce 9 (src line 71)
 
-	block  goto 76
 
 state 76
-	for_statement:  FOR LP expression_opt SEMICOLON expression_opt SEMICOLON expression_opt RP block.    (42)
+	global_statement:  GLOBAL_T identifier_list SEMICOLON.    (55)
 
-	.  reduce 42 (src line 172)
+	.  reduce 55 (src line 227)
 
 
 state 77
-	block:  LC.RC 
+	identifier_list:  identifier_list COMMA.IDENTIFIER 
 
-	RC  shift 78
+	IDENTIFIER  shift 100
 	.  error
 
 
 state 78
-	block:  LC RC.    (48)
+	if_statement:  IF LP expression.RP block 
+	if_statement:  IF LP expression.RP block ELSE block 
+	if_statement:  IF LP expression.RP block elsif_list 
+	if_statement:  IF LP expression.RP block elsif_list ELSE block 
 
-	.  reduce 48 (src line 203)
+	RP  shift 101
+	.  error
 
 
-40 terminals, 19 nonterminals
-49 grammar rules, 79/2000 states
-8 shift/reduce, 9 reduce/reduce conflicts reported
-68 working sets used
-memory: parser 153/30000
-42 extra closures
-235 shift entries, 5 exceptions
-40 goto entries
-109 entries saved by goto default
-Optimizer space used: output 93/30000
-93 table entries, 0 zero
-maximum spread: 39, maximum offset: 73
+state 79
+	while_statement:  WHILE LP expression.RP block 
+
+	RP  shift 102
+	.  error
+
+
+state 80
+	for_statement:  FOR LP expression_opt.SEMICOLON expression_opt SEMICOLON expression_opt RP block 
+
+	SEMICOLON  shift 103
+	.  error
+
+
+state 81
+	return_statement:  RETURN_T expression_opt SEMICOLON.    (69)
+
+	.  reduce 69 (src line 293)
+
+
+state 82
+	logical_and_expression:  logical_and_expression LOGICAL_AND equality_expression.    (18)
+	equality_expression:  equality_expression.EQ relational_expression 
+	equality_expression:  equality_expression.NE relational_expression 
+
+	EQ  shift 55
+	NE  shift 56
+	.  reduce 18 (src line 106)
+
+
+state 83
+	equality_expression:  equality_expression EQ relational_expression.    (20)
+	relational_expression:  relational_expression.GT additive_expression 
+	relational_expression:  relational_expression.GE additive_expression 
+	relational_expression:  relational_expression.LT additive_expression 
+	relational_expression:  relational_expression.LE additive_expression 
+
+	GT  shift 57
+	GE  shift 58
+	LT  shift 59
+	LE  shift 60
+	.  reduce 20 (src line 113)
+
+
+state 84
+	equality_expression:  equality_expression NE relational_expression.    (21)
+	relational_expression:  relational_expression.GT additive_expression 
+	relational_expression:  relational_expression.GE additive_expression 
+	relational_expression:  relational_expression.LT additive_expression 
+	relational_expression:  relational_expression.LE additive_expression 
+
+	GT  shift 57
+	GE  shift 58
+	LT  shift 59
+	LE  shift 60
+	.  reduce 21 (src line 117)
+
+
+state 85
+	relational_expression:  relational_expression GT additive_expression.    (23)
+	additive_expression:  additive_expression.ADD multiplicative_expression 
+	additive_expression:  additive_expression.SUB multiplicative_expression 
+
+	ADD  shift 61
+	SUB  shift 62
+	.  reduce 23 (src line 124)
+
+
+state 86
+	relational_expression:  relational_expression GE additive_expression.    (24)
+	additive_expression:  additive_expression.ADD multiplicative_expression 
+	additive_expression:  additive_expression.SUB multiplicative_expression 
+
+	ADD  shift 61
+	SUB  shift 62
+	.  reduce 24 (src line 128)
+
+
+state 87
+	relational_expression:  relational_expression LT additive_expression.    (25)
+	additive_expression:  additive_expression.ADD multiplicative_expression 
+	additive_expression:  additive_expression.SUB multiplicative_expression 
+
+	ADD  shift 61
+	SUB  shift 62
+	.  reduce 25 (src line 132)
+
+
+state 88
+	relational_expression:  relational_expression LE additive_expression.    (26)
+	additive_expression:  additive_expression.ADD multiplicative_expression 
+	additive_expression:  additive_expression.SUB multiplicative_expression 
+
+	ADD  shift 61
+	SUB  shift 62
+	.  reduce 26 (src line 137)
+
+
+state 89
+	additive_expression:  additive_expression ADD multiplicative_expression.    (28)
+	multiplicative_expression:  multiplicative_expression.MUL unary_expression 
+	multiplicative_expression:  multiplicative_expression.DIV unary_expression 
+	multiplicative_expression:  multiplicative_expression.MOD unary_expression 
+
+	MUL  shift 63
+	DIV  shift 64
+	MOD  shift 65
+	.  reduce 28 (src line 144)
+
+
+state 90
+	additive_expression:  additive_expression SUB multiplicative_expression.    (29)
+	multiplicative_expression:  multiplicative_expression.MUL unary_expression 
+	multiplicative_expression:  multiplicative_expression.DIV unary_expression 
+	multiplicative_expression:  multiplicative_expression.MOD unary_expression 
+
+	MUL  shift 63
+	DIV  shift 64
+	MOD  shift 65
+	.  reduce 29 (src line 148)
+
+
+state 91
+	multiplicative_expression:  multiplicative_expression MUL unary_expression.    (31)
+
+	.  reduce 31 (src line 155)
+
+
+state 92
+	multiplicative_expression:  multiplicative_expression DIV unary_expression.    (32)
+
+	.  reduce 32 (src line 159)
+
+
+state 93
+	multiplicative_expression:  multiplicative_expression MOD unary_expression.    (33)
+
+	.  reduce 33 (src line 163)
+
+
+state 94
+	primary_expression:  LP expression RP.    (39)
+
+	.  reduce 39 (src line 189)
+
+
+state 95
+	function_definition:  FUNCTION IDENTIFIER LP parameter_list.RP block 
+	parameter_list:  parameter_list.COMMA IDENTIFIER 
+
+	RP  shift 104
+	COMMA  shift 105
+	.  error
+
+
+state 96
+	function_definition:  FUNCTION IDENTIFIER LP RP.block 
+
+	LC  shift 107
+	.  error
+
+	block  goto 106
+
+state 97
+	parameter_list:  IDENTIFIER.    (7)
+
+	.  reduce 7 (src line 61)
+
+
+state 98
+	argument_list:  argument_list COMMA.expression 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 108
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+
+state 99
+	primary_expression:  IDENTIFIER LP argument_list RP.    (37)
+
+	.  reduce 37 (src line 180)
+
+
+state 100
+	identifier_list:  identifier_list COMMA IDENTIFIER.    (57)
+
+	.  reduce 57 (src line 237)
+
+
+state 101
+	if_statement:  IF LP expression RP.block 
+	if_statement:  IF LP expression RP.block ELSE block 
+	if_statement:  IF LP expression RP.block elsif_list 
+	if_statement:  IF LP expression RP.block elsif_list ELSE block 
+
+	LC  shift 107
+	.  error
+
+	block  goto 109
+
+state 102
+	while_statement:  WHILE LP expression RP.block 
+
+	LC  shift 107
+	.  error
+
+	block  goto 110
+
+state 103
+	for_statement:  FOR LP expression_opt SEMICOLON.expression_opt SEMICOLON expression_opt RP block 
+	expression_opt: .    (67)
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  reduce 67 (src line 286)
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 51
+	expression_opt  goto 111
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+
+state 104
+	function_definition:  FUNCTION IDENTIFIER LP parameter_list RP.block 
+
+	LC  shift 107
+	.  error
+
+	block  goto 112
+
+state 105
+	parameter_list:  parameter_list COMMA.IDENTIFIER 
+
+	IDENTIFIER  shift 113
+	.  error
+
+
+state 106
+	function_definition:  FUNCTION IDENTIFIER LP RP block.    (6)
+
+	.  reduce 6 (src line 56)
+
+
+state 107
+	block:  LC.statement_list RC 
+	block:  LC.RC 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	IF  shift 17
+	WHILE  shift 18
+	FOR  shift 19
+	RETURN_T  shift 20
+	BREAK  shift 21
+	CONTINUE  shift 22
+	NULL_T  shift 38
+	LP  shift 32
+	RC  shift 115
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	GLOBAL_T  shift 16
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 6
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+	continue_statement  goto 13
+	return_statement  goto 11
+	break_statement  goto 12
+	statement  goto 116
+	for_statement  goto 10
+	global_statement  goto 7
+	if_statement  goto 8
+	while_statement  goto 9
+	statement_list  goto 114
+
+state 108
+	argument_list:  argument_list COMMA expression.    (10)
+
+	.  reduce 10 (src line 76)
+
+
+state 109
+	if_statement:  IF LP expression RP block.    (58)
+	if_statement:  IF LP expression RP block.ELSE block 
+	if_statement:  IF LP expression RP block.elsif_list 
+	if_statement:  IF LP expression RP block.elsif_list ELSE block 
+
+	ELSE  shift 117
+	ELSIF  shift 120
+	.  reduce 58 (src line 242)
+
+	elsif  goto 119
+	elsif_list  goto 118
+
+state 110
+	while_statement:  WHILE LP expression RP block.    (65)
+
+	.  reduce 65 (src line 273)
+
+
+state 111
+	for_statement:  FOR LP expression_opt SEMICOLON expression_opt.SEMICOLON expression_opt RP block 
+
+	SEMICOLON  shift 121
+	.  error
+
+
+state 112
+	function_definition:  FUNCTION IDENTIFIER LP parameter_list RP block.    (5)
+
+	.  reduce 5 (src line 51)
+
+
+state 113
+	parameter_list:  parameter_list COMMA IDENTIFIER.    (8)
+
+	.  reduce 8 (src line 66)
+
+
+state 114
+	statement_list:  statement_list.statement 
+	block:  LC statement_list.RC 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	IF  shift 17
+	WHILE  shift 18
+	FOR  shift 19
+	RETURN_T  shift 20
+	BREAK  shift 21
+	CONTINUE  shift 22
+	NULL_T  shift 38
+	LP  shift 32
+	RC  shift 123
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	GLOBAL_T  shift 16
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 6
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+	continue_statement  goto 13
+	return_statement  goto 11
+	break_statement  goto 12
+	statement  goto 122
+	for_statement  goto 10
+	global_statement  goto 7
+	if_statement  goto 8
+	while_statement  goto 9
+
+state 115
+	block:  LC RC.    (73)
+
+	.  reduce 73 (src line 315)
+
+
+state 116
+	statement_list:  statement.    (11)
+
+	.  reduce 11 (src line 81)
+
+
+state 117
+	if_statement:  IF LP expression RP block ELSE.block 
+
+	LC  shift 107
+	.  error
+
+	block  goto 124
+
+state 118
+	if_statement:  IF LP expression RP block elsif_list.    (60)
+	if_statement:  IF LP expression RP block elsif_list.ELSE block 
+	elsif_list:  elsif_list.elsif 
+
+	ELSE  shift 125
+	ELSIF  shift 120
+	.  reduce 60 (src line 251)
+
+	elsif  goto 126
+
+state 119
+	elsif_list:  elsif.    (62)
+
+	.  reduce 62 (src line 260)
+
+
+state 120
+	elsif:  ELSIF.LP expression RP block 
+
+	LP  shift 127
+	.  error
+
+
+state 121
+	for_statement:  FOR LP expression_opt SEMICOLON expression_opt SEMICOLON.expression_opt RP block 
+	expression_opt: .    (67)
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  reduce 67 (src line 286)
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 51
+	expression_opt  goto 128
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+
+state 122
+	statement_list:  statement_list statement.    (12)
+
+	.  reduce 12 (src line 86)
+
+
+state 123
+	block:  LC statement_list RC.    (72)
+
+	.  reduce 72 (src line 310)
+
+
+state 124
+	if_statement:  IF LP expression RP block ELSE block.    (59)
+
+	.  reduce 59 (src line 247)
+
+
+state 125
+	if_statement:  IF LP expression RP block elsif_list ELSE.block 
+
+	LC  shift 107
+	.  error
+
+	block  goto 129
+
+state 126
+	elsif_list:  elsif_list elsif.    (63)
+
+	.  reduce 63 (src line 262)
+
+
+state 127
+	elsif:  ELSIF LP.expression RP block 
+
+	INT_LITERAL  shift 33
+	DOUBLE_LITERAL  shift 34
+	STRING_LITERAL  shift 35
+	IDENTIFIER  shift 15
+	NULL_T  shift 38
+	LP  shift 32
+	ADD  shift 31
+	SUB  shift 30
+	TRUE_T  shift 36
+	FALSE_T  shift 37
+	.  error
+
+	primary_expression  goto 29
+	unary_expression  goto 28
+	multiplicative_expression  goto 27
+	additive_expression  goto 26
+	relational_expression  goto 25
+	expression  goto 130
+	logical_or_expression  goto 14
+	logical_and_expression  goto 23
+	equality_expression  goto 24
+
+state 128
+	for_statement:  FOR LP expression_opt SEMICOLON expression_opt SEMICOLON expression_opt.RP block 
+
+	RP  shift 131
+	.  error
+
+
+state 129
+	if_statement:  IF LP expression RP block elsif_list ELSE block.    (61)
+
+	.  reduce 61 (src line 255)
+
+
+state 130
+	elsif:  ELSIF LP expression.RP block 
+
+	RP  shift 132
+	.  error
+
+
+state 131
+	for_statement:  FOR LP expression_opt SEMICOLON expression_opt SEMICOLON expression_opt RP.block 
+
+	LC  shift 107
+	.  error
+
+	block  goto 133
+
+state 132
+	elsif:  ELSIF LP expression RP.block 
+
+	LC  shift 107
+	.  error
+
+	block  goto 134
+
+state 133
+	for_statement:  FOR LP expression_opt SEMICOLON expression_opt SEMICOLON expression_opt RP block.    (66)
+
+	.  reduce 66 (src line 279)
+
+
+state 134
+	elsif:  ELSIF LP expression RP block.    (64)
+
+	.  reduce 64 (src line 267)
+
+
+40 terminals, 29 nonterminals
+74 grammar rules, 135/2000 states
+0 shift/reduce, 0 reduce/reduce conflicts reported
+78 working sets used
+memory: parser 247/30000
+110 extra closures
+414 shift entries, 1 exceptions
+68 goto entries
+178 entries saved by goto default
+Optimizer space used: output 232/30000
+232 table entries, 30 zero
+maximum spread: 40, maximum offset: 132
