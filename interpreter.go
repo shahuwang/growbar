@@ -44,14 +44,15 @@ func (ipt *Interpreter) AddStdFp() {
 	p := NativePointer{}
 	p.info = &NativePointerInfo{name: NATIVE_LIB_NAME}
 	p.pointer = os.Stdin
-	v.u = p
+	v.native_pointer = p
 	v.typ = CRB_NATIVE_POINTER_VALUE
 	ipt.AddGlobalVariable("STDIN", v)
 	p.pointer = os.Stdout
-	v.u = p
+	v.native_pointer = p
+	v.native_pointer = p
 	ipt.AddGlobalVariable("STDOUT", v)
 	p.pointer = os.Stderr
-	v.u = p
+	v.native_pointer = p
 	ipt.AddGlobalVariable("STDERR", v)
 }
 

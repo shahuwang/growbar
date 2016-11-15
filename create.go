@@ -34,9 +34,31 @@ func createNullExpression() *Expression {
 	return exp
 }
 
+func convertValueToExpression(v *Value) Expression {
+	expr := new(Expression)
+	if v.typ == CRB_INT_VALUE {
+		expr.Type = INT_EXPRESSION
+		expr.int_value = v.int_value
+	} else if v.typ == CRB_DOUBLE_VALUE {
+		expr.Type = DOUBLE_EXPRESSION
+		expr.double_value = v.double_value
+	} else {
+		expr.Type = BOOLEAN_EXPRESSION
+		expr.boolean_value = v.boolean_value
+	}
+	return *expr
+}
+
 func createMinusExpression(operand *Expression) *Expression {
-	//TODO
-	return operand
+	if operand.Type == INT_EXPRESSION || operand.Type == DOUBLE_EXPRESSION {
+		v := evalMinusExpression(getCurrentInterpreter(), nil, operand)
+		*operand = convertValueToExpression(&v)
+		return operand
+	} else {
+		exp := allocExpression(MINUS_EXPRESSION)
+		exp.minus_expression = operand
+		return exp
+	}
 }
 
 func createAddExpression(operand *Expression) *Expression {
@@ -96,6 +118,7 @@ func chainStatementList(sl *StatementList, st *Statement) *StatementList {
 		}
 		pos = pos.next
 	}
+	pos.next = createStatementList(st)
 	return sl
 }
 
@@ -145,23 +168,41 @@ func createElsif(expr *Expression, block *Block) *Elsif {
 }
 
 func createArgumentList(expr *Expression) *ArgumentList {
-	// TODO
-	return new(ArgumentList)
+	al := new(ArgumentList)
+	al.expression = expr
+	al.next = nil
+	return al
 }
 
 func chainArgumentList(list *ArgumentList, expr *Expression) *ArgumentList {
-	//TODO
-	return new(ArgumentList)
+	pos := list
+	for {
+		if pos.next == nil {
+			break
+		}
+		pos = pos.next
+	}
+	pos.next = createArgumentList(expr)
+	return list
 }
 
 func createParameter(identifier string) *ParameterList {
-	// TODO
-	return new(ParameterList)
+	p := new(ParameterList)
+	p.name = identifier
+	p.next = nil
+	return p
 }
 
 func chainParameter(list *ParameterList, identifier string) *ParameterList {
-	// TODO
-	return new(ParameterList)
+	pos := list
+	for {
+		if pos.next == nil {
+			break
+		}
+		pos = pos.next
+	}
+	pos.next = createParameter(identifier)
+	return list
 }
 
 func createFunctionCallExpression(funcName string, argument *ArgumentList) *Expression {

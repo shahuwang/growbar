@@ -24,6 +24,10 @@ type NativePointer struct {
 	pointer interface{}
 }
 type Value struct {
-	typ ValueType
-	u   interface{}
+	typ            ValueType
+	boolean_value  bool
+	string_value   CRBString
+	native_pointer NativePointer
+	int_value      int
+	double_value   float32
 }

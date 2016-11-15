@@ -41,6 +41,7 @@ type Expression struct {
 	string_value      string
 	identifier        string
 	assign_expression *AssignExpression
+	minus_expression  *Expression
 }
 
 type AssignExpression struct {
