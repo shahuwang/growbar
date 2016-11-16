@@ -66,6 +66,16 @@ func createMinusExpression(operand *Expression) *Expression {
 
 func createAddExpression(operand *Expression) *Expression {
 	// TODO
+	if operand.Type == INT_EXPRESSION || operand.Type == DOUBLE_EXPRESSION {
+		ipt := getCurrentInterpreter()
+		v := ipt.evalAddExpression(nil, operand)
+		*operand = convertValueToExpression(&v)
+		return operand
+	} else {
+		exp := allocExpression(ADD_EXPRESSION)
+		exp.minus_expression = operand
+		return exp
+	}
 	return operand
 }
 

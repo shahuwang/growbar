@@ -193,3 +193,19 @@ func (ipt *Interpreter) evalMinusExpression(env *LocalEnvironment, operand *Expr
 	}
 	return *result
 }
+
+func (ipt *Interpreter) evalAddExpression(env *LocalEnvironment, operand *Expression) Value {
+	result := new(Value)
+	val := ipt.evalExpression(env, operand)
+	if val.typ == CRB_INT_VALUE {
+		result.typ = CRB_INT_VALUE
+		result.int_value = operand.int_value
+	} else if val.typ == CRB_DOUBLE_VALUE {
+		result.typ = CRB_DOUBLE_VALUE
+		result.double_value = operand.double_value
+	} else {
+		runtimeError(operand.line_number, MINUS_OPERAND_TYPE_ERR)
+	}
+	return *result
+
+}
