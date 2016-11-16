@@ -38,6 +38,8 @@ func createNullExpression() *Expression {
 
 func convertValueToExpression(v *Value) Expression {
 	expr := new(Expression)
+	ipt := getCurrentInterpreter()
+	expr.line_number = ipt.current_line_number
 	if v.typ == CRB_INT_VALUE {
 		expr.Type = INT_EXPRESSION
 		expr.int_value = v.int_value
@@ -65,7 +67,6 @@ func createMinusExpression(operand *Expression) *Expression {
 }
 
 func createAddExpression(operand *Expression) *Expression {
-	// TODO
 	if operand.Type == INT_EXPRESSION || operand.Type == DOUBLE_EXPRESSION {
 		ipt := getCurrentInterpreter()
 		v := ipt.evalAddExpression(nil, operand)

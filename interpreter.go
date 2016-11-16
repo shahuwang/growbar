@@ -23,7 +23,7 @@ func getCurrentInterpreter() *Interpreter {
 
 func NewInterpreter() *Interpreter {
 	interpreter := new(Interpreter)
-	interpreter.current_line_number = 0
+	interpreter.current_line_number = 1
 	return interpreter
 }
 
