@@ -1,6 +1,8 @@
 package main
 
-import ()
+import (
+// "fmt"
+)
 
 func allocExpression(typ ExpressionType) *Expression {
 	exp := new(Expression)

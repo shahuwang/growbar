@@ -170,6 +170,8 @@ func (ipt *Interpreter) evalExpression(env *LocalEnvironment, expr *Expression) 
 	switch expr.Type {
 	case INT_EXPRESSION:
 		v = evalIntExpression(expr.int_value)
+	case DOUBLE_EXPRESSION:
+		v = evalDoubleExpression(expr.double_value)
 	default:
 		msg := fmt.Sprintf("bad case. type .. %d\n", expr.Type)
 		panic(msg)
@@ -183,8 +185,8 @@ func (ipt *Interpreter) evalMinusExpression(env *LocalEnvironment, operand *Expr
 	if val.typ == CRB_INT_VALUE {
 		result.typ = CRB_INT_VALUE
 		result.int_value = -operand.int_value
-	} else if val.typ == CRB_BOOLEAN_VALUE {
-		result.typ = CRB_BOOLEAN_VALUE
+	} else if val.typ == CRB_DOUBLE_VALUE {
+		result.typ = CRB_DOUBLE_VALUE
 		result.double_value = -operand.double_value
 	} else {
 		runtimeError(operand.line_number, MINUS_OPERAND_TYPE_ERR)

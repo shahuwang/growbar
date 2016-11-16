@@ -326,6 +326,7 @@ func (g *Growlex) scanNumber(lval *GrowSymType) int {
 						return -1
 					}
 					exp.double_value = float32(f)
+					exp.Type = DOUBLE_EXPRESSION
 					return DOUBLE_LITERAL
 				} else {
 					g.Error("wrong number syntax")
@@ -361,6 +362,7 @@ func (g *Growlex) scanNumber(lval *GrowSymType) int {
 						return -1
 					}
 					exp.double_value = float32(f)
+					exp.Type = DOUBLE_EXPRESSION
 					return DOUBLE_LITERAL
 				}
 			}
