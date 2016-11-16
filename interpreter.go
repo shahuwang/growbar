@@ -160,12 +160,34 @@ func (ipt *Interpreter) ExecuteBreakStatement(env *LocalEnvironment, statement *
 	return StatementResult{typ: BREAK_STATEMENT_RESULT}
 }
 
-func (ipt *Interpreter) EvalExpression(env *LocalEnvironment, expr *Expression) Value {
-	return ipt.EvalExpression(env, expr)
-}
+// func (ipt *Interpreter) EvalExpression(env *LocalEnvironment, expr *Expression) Value {
+// 	return ipt.EvalExpression(env, expr)
+// }
 
 func (ipt *Interpreter) evalExpression(env *LocalEnvironment, expr *Expression) Value {
 	//TODO
 	var v Value
+	switch expr.Type {
+	case INT_EXPRESSION:
+		v = evalIntExpression(expr.int_value)
+	default:
+		msg := fmt.Sprintf("bad case. type .. %d\n", expr.Type)
+		panic(msg)
+	}
 	return v
+}
+
+func (ipt *Interpreter) evalMinusExpression(env *LocalEnvironment, operand *Expression) Value {
+	result := new(Value)
+	val := ipt.evalExpression(env, operand)
+	if val.typ == CRB_INT_VALUE {
+		result.typ = CRB_INT_VALUE
+		result.int_value = -operand.int_value
+	} else if val.typ == CRB_BOOLEAN_VALUE {
+		result.typ = CRB_BOOLEAN_VALUE
+		result.double_value = -operand.double_value
+	} else {
+		runtimeError(operand.line_number, MINUS_OPERAND_TYPE_ERR)
+	}
+	return *result
 }

@@ -31,42 +31,18 @@ var runtimeErrorMessageFormat []MessageFormat = []MessageFormat{
 	MessageFormat{"dummy"},
 }
 
-func selfCheck() {
-	// 不明白这个函数的意图
-	if compileErrorMessageFormat[0].format != "dummy" {
-		panic("compile error message format error\n")
-	}
-	if compileErrorMessageFormat[COMPILE_ERROR_COUNT_PLUS_1].format != "dummy" {
-		msg := fmt.Sprintf(
-			"compile error message format error.\n COMPILE_ERROR_COUNT_PLUS_1..%d\n",
-			COMPILE_ERROR_COUNT_PLUS_1)
-		panic(msg)
-	}
-	if runtimeErrorMessageFormat[0].format != "dummy" {
-		panic("compile error message format error\n")
-	}
-	if runtimeErrorMessageFormat[RUNTIME_ERROR_COUNT_PLUS_1].format != "dummy" {
-		msg := fmt.Sprintf(
-			"compile error message format error.\n COMPILE_ERROR_COUNT_PLUS_1..%d\n",
-			COMPILE_ERROR_COUNT_PLUS_1)
-		panic(msg)
-	}
-}
-
 func errorFormat(line_number int, format string, args ...interface{}) {
 	msg := fmt.Sprintf(format, args)
 	fmt.Fprintf(os.Stderr, "Error is in line %d, %s", line_number, msg)
 }
 
 func runtimeError(line_number int, id RuntimeError, args ...interface{}) {
-	selfCheck()
 	format := runtimeErrorMessageFormat[id].format
 	errorFormat(line_number, format, args)
 	os.Exit(1)
 }
 
 func compileError(line_number int, id CompileError, args ...interface{}) {
-	selfCheck()
 	format := compileErrorMessageFormat[id].format
 	errorFormat(line_number, format, args)
 	os.Exit(1)

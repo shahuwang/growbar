@@ -51,7 +51,8 @@ func convertValueToExpression(v *Value) Expression {
 
 func createMinusExpression(operand *Expression) *Expression {
 	if operand.Type == INT_EXPRESSION || operand.Type == DOUBLE_EXPRESSION {
-		v := evalMinusExpression(getCurrentInterpreter(), nil, operand)
+		ipt := getCurrentInterpreter()
+		v := ipt.evalMinusExpression(nil, operand)
 		*operand = convertValueToExpression(&v)
 		return operand
 	} else {
