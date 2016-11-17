@@ -11,3 +11,8 @@ func evalDoubleExpression(v float32) Value {
 	value := Value{typ: CRB_DOUBLE_VALUE, double_value: v}
 	return value
 }
+
+func evalCompareString(operator ExpressionType, left *Value, right *Value, line_number int) bool {
+	//TODO
+	return true
+}

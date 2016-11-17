@@ -26,7 +26,7 @@ type NativePointer struct {
 type Value struct {
 	typ            ValueType
 	boolean_value  bool
-	string_value   CRBString
+	string_value   *CRBString
 	native_pointer NativePointer
 	int_value      int
 	double_value   float32

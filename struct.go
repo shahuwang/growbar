@@ -42,6 +42,12 @@ type Expression struct {
 	identifier        string
 	assign_expression *AssignExpression
 	minus_expression  *Expression
+	binary_expression *BinaryExpression
+}
+
+type BinaryExpression struct {
+	left  *Expression
+	right *Expression
 }
 
 type AssignExpression struct {

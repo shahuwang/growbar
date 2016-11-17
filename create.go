@@ -9,6 +9,10 @@ func allocExpression(typ ExpressionType) *Expression {
 	exp.Type = typ
 	ipt := getCurrentInterpreter()
 	exp.line_number = ipt.current_line_number
+	exp.binary_expression = new(BinaryExpression)
+	exp.minus_expression = new(Expression)
+	exp.minus_expression.Type = MINUS_EXPRESSION
+	exp.assign_expression = new(AssignExpression)
 	return exp
 }
 
@@ -82,8 +86,20 @@ func createAddExpression(operand *Expression) *Expression {
 
 func createBinaryExpression(
 	operator ExpressionType, left *Expression, right *Expression) *Expression {
-	//TODO
-	return left
+	if (left.Type == INT_EXPRESSION ||
+		left.Type == DOUBLE_EXPRESSION) &&
+		(right.Type == INT_EXPRESSION ||
+			right.Type == DOUBLE_EXPRESSION) {
+		ipt := getCurrentInterpreter()
+		v := ipt.evalBinaryExpression(nil, operator, left, right)
+		*left = convertValueToExpression(&v)
+		return left
+	} else {
+		exp := allocExpression(operator)
+		exp.binary_expression.left = left
+		exp.binary_expression.right = right
+		return exp
+	}
 }
 
 func allocStatement(typ StatementType) *Statement {

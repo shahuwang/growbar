@@ -209,3 +209,123 @@ func (ipt *Interpreter) evalAddExpression(env *LocalEnvironment, operand *Expres
 	return *result
 
 }
+
+func (ipt *Interpreter) evalBinaryExpression(
+	env *LocalEnvironment,
+	operator ExpressionType,
+	left *Expression, right *Expression) Value {
+	lval := ipt.evalExpression(env, left)
+	rval := ipt.evalExpression(env, right)
+	var result Value
+	if lval.typ == CRB_INT_VALUE && rval.typ == CRB_INT_VALUE {
+		ipt.evalBinaryInt(operator, lval.int_value, rval.int_value, &result, left.line_number)
+	} else if lval.typ == CRB_DOUBLE_VALUE && rval.typ == CRB_DOUBLE_VALUE {
+		ipt.evalBinaryDouble(operator, lval.double_value, rval.double_value, &result, left.line_number)
+	} else if lval.typ == CRB_INT_VALUE && rval.typ == CRB_DOUBLE_VALUE {
+		lval.double_value = float32(lval.int_value)
+		ipt.evalBinaryDouble(operator, lval.double_value, rval.double_value, &result, left.line_number)
+	} else if lval.typ == CRB_DOUBLE_VALUE && rval.typ == CRB_INT_VALUE {
+		rval.double_value = float32(rval.int_value)
+		ipt.evalBinaryDouble(operator, lval.double_value, rval.double_value, &result, left.line_number)
+	} else if lval.typ == CRB_BOOLEAN_VALUE && rval.typ == CRB_BOOLEAN_VALUE {
+		result.typ = CRB_BOOLEAN_VALUE
+		result.boolean_value = ipt.evalBinaryBoolean(operator, lval.boolean_value, rval.boolean_value, left.line_number)
+	} else if lval.typ == CRB_STRING_VALUE && operator == ADD_EXPRESSION {
+		var right_str *CRBString
+		if rval.typ == CRB_INT_VALUE {
+			str := fmt.Sprintf("%d", rval.int_value)
+			right_str = ipt.createCrowbarString(str)
+		} else if rval.typ == CRB_DOUBLE_VALUE {
+			str := fmt.Sprintf("%f", rval.double_value)
+			right_str = ipt.createCrowbarString(str)
+		} else if rval.typ == CRB_BOOLEAN_VALUE {
+			str := fmt.Sprintf("%t", rval.boolean_value)
+			right_str = ipt.createCrowbarString(str)
+		} else if rval.typ == CRB_STRING_VALUE {
+			right_str = rval.string_value
+		} else if rval.typ == CRB_NATIVE_POINTER_VALUE {
+			str := fmt.Sprintf("(%s:%p)", rval.native_pointer.info.name, rval.native_pointer.pointer)
+			right_str = ipt.createCrowbarString(str)
+		} else if rval.typ == CRB_NULL_VALUE {
+			right_str = ipt.createCrowbarString("null")
+		}
+		result.typ = CRB_STRING_VALUE
+		result.string_value = ipt.chainString(lval.string_value, right_str)
+	} else if lval.typ == CRB_STRING_VALUE && rval.typ == CRB_STRING_VALUE {
+		result.typ = CRB_BOOLEAN_VALUE
+		result.boolean_value = evalCompareString(operator, &lval, &rval, left.line_number)
+	} else if lval.typ == CRB_NULL_VALUE || rval.typ == CRB_NULL_VALUE {
+		result.typ = CRB_BOOLEAN_VALUE
+		result.boolean_value = ipt.evalBinaryNull(operator, &lval, &rval, left.line_number)
+	} else {
+		opt_str := getOperatorString(operator)
+		msg := fmt.Sprintf(" operator: %s", opt_str)
+		runtimeError(left.line_number, BAD_OPERAND_TYPE_ERR, msg)
+	}
+	return result
+}
+
+func (ipt *Interpreter) evalCompareString(operator ExpressionType, left *Value, right *Value, line_number int) bool {
+	lstr := left.string_value.str
+	rstr := right.string_value.str
+	switch operator {
+	case EQ_EXPRESSION:
+		return lstr == rstr
+	case NE_EXPRESSION:
+		return lstr != rstr
+	case GT_EXPRESSION:
+		return lstr > rstr
+	case GE_EXPRESSION:
+		return lstr >= rstr
+	case LT_EXPRESSION:
+		return lstr < rstr
+	case LE_EXPRESSION:
+		return lstr <= rstr
+	default:
+		opt_str := getOperatorString(operator)
+		msg := fmt.Sprintf(" operator: %s", opt_str)
+		runtimeError(line_number, BAD_OPERATOR_FOR_STRING_ERR, msg)
+	}
+	return true
+}
+
+func (ipt *Interpreter) evalBinaryInt(
+	operator ExpressionType,
+	left int, right int,
+	result *Value, line_number int) {
+	//TODO
+}
+
+func (ipt *Interpreter) evalBinaryDouble(
+	operator ExpressionType, left float32, right float32, result *Value, line_number int) {
+	//TODO
+}
+
+func (ipt *Interpreter) evalBinaryBoolean(operator ExpressionType, left bool, right bool, line_number int) bool {
+	// TODO
+	return true
+}
+
+func (ipt *Interpreter) evalBinaryNull(operator ExpressionType, lval *Value, rval *Value, line_number int) bool {
+	//TODO
+	return true
+}
+
+func (ipt *Interpreter) createCrowbarString(str string) *CRBString {
+	ret := ipt.allocCrbString(str, false)
+	ret.ref_count = 1
+	return ret
+}
+
+func (ipt *Interpreter) allocCrbString(str string, is_literal bool) *CRBString {
+	ret := new(CRBString)
+	ret.ref_count = 0
+	ret.is_literal = is_literal
+	ret.str = str
+	return ret
+}
+
+func (ipt *Interpreter) chainString(left *CRBString, right *CRBString) *CRBString {
+	// TODO
+	return new(CRBString)
+}
