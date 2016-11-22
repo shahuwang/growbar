@@ -164,18 +164,130 @@ func (ipt *Interpreter) ExecuteBreakStatement(env *LocalEnvironment, statement *
 // 	return ipt.EvalExpression(env, expr)
 // }
 
+func (ipt *Interpreter) evalStringExpression(str string) Value {
+	var v Value
+	v.typ = CRB_STRING_VALUE
+	v.string_value = ipt.literalToCrbString(str)
+	return v
+}
+
+func (ipt *Interpreter) literalToCrbString(str string) CRBString {
+	ret := new(CRBString)
+	ret.str = str
+	ret.is_literal = true
+	ret.ref_count = 1
+	return ret
+}
+
 func (ipt *Interpreter) evalExpression(env *LocalEnvironment, expr *Expression) Value {
-	//TODO
 	var v Value
 	switch expr.Type {
 	case INT_EXPRESSION:
 		v = evalIntExpression(expr.int_value)
 	case DOUBLE_EXPRESSION:
 		v = evalDoubleExpression(expr.double_value)
+	case BOOLEAN_EXPRESSION:
+		v = evalBooleanExpression(expr.boolean_value)
+	case STRING_EXPRESSION:
+		v = ipt.evalStringExpression(expr.string_value)
+	case IDENTIFIER_EXPRESSION:
+		v = ipt.evalIdentifierExpression(evn, expr)
+	case ASSIGN_EXPRESSION:
+		v = ipt.evalAssignExpression(env, expr.assign_expression.variable, expr.assign_expression.operand)
+	case ADD_EXPRESSION, SUB_EXPRESSION, MUL_EXPRESSION,
+		DIV_EXPRESSION, MOD_EXPRESSION, EQ_EXPRESSION,
+		NE_EXPRESSION, GT_EXPRESSION, GE_EXPRESSION,
+		LT_EXPRESSION, LE_EXPRESSION:
+		v = ipt.evalBinaryExpression(env, expr.Type, expr.binary_expression.left, expr.binary_expression.right)
+	case LOGICAL_OR_EXPRESSION, LOGICAL_AND_EXPRESSION:
+		v = ipt.evalLogicalAndOrExpression(env, expr.Type, expr.binary_expression.left, expr.binary_expression.right)
+	case MINUS_EXPRESSION:
+		v = ipt.evalMinusExpression(env, expr.minus_expression)
+	case FUNCTION_CALL_EXPRESSION:
+		v = ipt.evalFunctionCallExpression(env, expr)
 	default:
 		msg := fmt.Sprintf("bad case. type .. %d\n", expr.Type)
 		panic(msg)
 	}
+	return v
+}
+
+func (ipt *Interpreter) evalLogicalAndOrExpression(env *LocalEnvironment, operator ExpressionType, left *Expression, right *Expression) Value {
+	var lval Value
+	var rval Value
+	var result Value
+	result.typ = CRB_BOOLEAN_VALUE
+	lval = ipt.evalExpression(env, left)
+	if lval.typ != CRB_BOOLEAN_VALUE {
+		runtimeError(left.line_number, NOT_BOOLEAN_TYPE_ERR)
+	}
+	if operator == LOGICAL_AND_EXPRESSION {
+		if !lval.boolean_value {
+			result.boolean_value = false
+			return result
+		}
+	} else if operator == LOGICAL_OR_EXPRESSION {
+		if lval.boolean_value {
+			result.boolean_value = true
+			return result
+		}
+	} else {
+		msg := fmt.Sprintf("bad operator.. %d\n", operator)
+		panic(msg)
+	}
+	rval = ipt.evalExpression(env, right)
+	if rval.typ != CRB_BOOLEAN_VALUE {
+		runtimeError(left.line_number, NOT_BOOLEAN_TYPE_ERR)
+	}
+	result.boolean_value = rval.boolean_value
+	return result
+}
+
+func (ipt *Interpreter) evalAssignExpression(env *LocalEnvironment, identifier string, expr *Expression) Value {
+	var v Value = ipt.evalExpression(env, expr)
+	var left *Variable = searchLocalVariable(env, identifier)
+	if left == nil {
+		left = searchGlobalVariableFromEnv(env)
+	}
+	if left != nil {
+		releaseIfString(&left.value)
+		left.value = v
+		referIfString(&v)
+	} else {
+		if env != nil {
+			addLocalVariable(env, identifier, &v)
+		} else {
+			ipt.AddGlobalVariable(identifier, &v)
+		}
+		referIfString(&v)
+	}
+	return v
+}
+
+func (ipt *Interpreter) searchGlobalVariableFromEnv(identifier string) Variable {
+	pos := ipt.variable
+	for {
+		if pos == nil || pos.name == identifier {
+			break
+		}
+	}
+	return pos
+}
+
+func (ipt *Interpreter) evalIdentifierExpression(env *LocalEnvironment, expr *Expression) Value {
+	vp := searchLocalVariable(env, expr.identifier)
+	var v Value
+	if vp != nil {
+		v = vp.value
+	} else {
+		vp = ipt.searchGlobalVariableFromEnv(env, expr.identifier)
+		if vp != nil {
+			v = vp.value
+		} else {
+			runtimeError(expr.line_number, VARIABLE_NOT_FOUND_ERROR)
+		}
+	}
+	referIfString(&v)
 	return v
 }
 
@@ -293,22 +405,110 @@ func (ipt *Interpreter) evalBinaryInt(
 	operator ExpressionType,
 	left int, right int,
 	result *Value, line_number int) {
-	//TODO
+	switch operator {
+	case ADD_EXPRESSION:
+		result.int_value = left + right
+		result.typ = CRB_INT_VALUE
+	case SUB_EXPRESSION:
+		result.int_value = left - right
+		result.typ = CRB_INT_VALUE
+	case MUL_EXPRESSION:
+		result.int_value = left * right
+		result.typ = CRB_INT_VALUE
+	case DIV_EXPRESSION:
+		result.int_value = left / right
+		result.typ = CRB_INT_VALUE
+	case MOD_EXPRESSION:
+		result.int_value = left % right
+		result.typ = CRB_INT_VALUE
+	case EQ_EXPRESSION:
+		result.boolean_value = (left == right)
+		result.typ = CRB_BOOLEAN_VALUE
+	case NE_EXPRESSION:
+		result.boolean_value = (left != right)
+		result.typ = CRB_BOOLEAN_VALUE
+	case GT_EXPRESSION:
+		result.boolean_value = (left > right)
+		result.typ = CRB_BOOLEAN_VALUE
+	case GE_EXPRESSION:
+		result.boolean_value = (left >= right)
+		result.typ = CRB_BOOLEAN_VALUE
+	case LT_EXPRESSION:
+		result.boolean_value = (left < right)
+		result.typ = CRB_BOOLEAN_VALUE
+	case LE_EXPRESSION:
+		result.boolean_value = (left <= right)
+		result.typ = CRB_BOOLEAN_VALUE
+	default:
+		msg := fmt.Sprintf("bad case ... %d", operator)
+	}
 }
 
 func (ipt *Interpreter) evalBinaryDouble(
 	operator ExpressionType, left float32, right float32, result *Value, line_number int) {
-	//TODO
+	switch operator {
+	case ADD_EXPRESSION:
+		result.double_value = left + right
+		result.typ = CRB_DOUBLE_VALUE
+	case SUB_EXPRESSION:
+		result.double_value = left - right
+		result.typ = CRB_DOUBLE_VALUE
+	case MUL_EXPRESSION:
+		result.double_value = left * right
+		result.typ = CRB_DOUBLE_VALUE
+	case DIV_EXPRESSION:
+		result.double_value = left / right
+		result.typ = CRB_DOUBLE_VALUE
+	case MOD_EXPRESSION:
+		result.double_value = left % right
+		result.typ = CRB_DOUBLE_VALUE
+	case EQ_EXPRESSION:
+		result.boolean_value = (left == right)
+		result.typ = CRB_BOOLEAN_VALUE
+	case NE_EXPRESSION:
+		result.boolean_value = (left != right)
+		result.typ = CRB_BOOLEAN_VALUE
+	case GT_EXPRESSION:
+		result.boolean_value = (left > right)
+		result.typ = CRB_BOOLEAN_VALUE
+	case GE_EXPRESSION:
+		result.boolean_value = (left >= right)
+		result.typ = CRB_BOOLEAN_VALUE
+	case LT_EXPRESSION:
+		result.boolean_value = (left < right)
+		result.typ = CRB_BOOLEAN_VALUE
+	case LE_EXPRESSION:
+		result.boolean_value = (left <= right)
+		result.typ = CRB_BOOLEAN_VALUE
+	default:
+		msg := fmt.Sprintf("bad case ... %d", operator)
+	}
 }
 
 func (ipt *Interpreter) evalBinaryBoolean(operator ExpressionType, left bool, right bool, line_number int) bool {
-	// TODO
-	return true
+	var result bool
+	if operator == EQ_EXPRESSION {
+		result = (left == right)
+	} else if operator == NE_EXPRESSION {
+		result = (left != right)
+	} else {
+		op_str := getOperatorString(operator)
+		runtimeError(line_number, NOT_BOOLEAN_OPERATOR_ERR)
+	}
+	return result
 }
 
 func (ipt *Interpreter) evalBinaryNull(operator ExpressionType, lval *Value, rval *Value, line_number int) bool {
-	//TODO
-	return true
+	var result bool
+	if operator == EQ_EXPRESSION {
+		result = (lval.typ == CRB_NULL_VALUE && rval.typ == CRB_NULL_VALUE)
+	} else if operator == NE_EXPRESSION {
+		result = !(lval.typ == CRB_NULL_VALUE && rval.typ == CRB_NULL_VALUE)
+	} else {
+		op_str := getOperatorString(operator)
+		runtimeError(line_number, NOT_NULL_OPERATOR_ERR)
+	}
+	return result
 }
 
 func (ipt *Interpreter) createCrowbarString(str string) *CRBString {

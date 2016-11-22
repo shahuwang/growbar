@@ -53,3 +53,25 @@ func releaseString(str *CRBString) {
 
 	}
 }
+
+func searchLocalVariable(env *LocalEnvironment, identifier string) *Variable {
+	if env == nil {
+		return nil
+	}
+	pos := env.variable
+	for {
+		if pos == nil || pos.name == identifier {
+			break
+		}
+		pos = pos.next
+	}
+	return pos
+}
+
+func addLocalVariable(env *LocalEnvironment, identifier string, value *Value) {
+	newV := new(Variable)
+	newV.name = identifier
+	newV.value = *value
+	newV.next = env.variable
+	env.variable = newV
+}
