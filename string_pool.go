@@ -8,6 +8,6 @@ func referIfString(v *Value) {
 	}
 }
 
-func referString(str CRBString) {
+func referString(str *CRBString) {
 	str.ref_count++
 }

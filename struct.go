@@ -33,16 +33,22 @@ const (
 )
 
 type Expression struct {
-	Type              ExpressionType
-	line_number       int
-	boolean_value     bool
-	int_value         int
-	double_value      float32
-	string_value      string
-	identifier        string
-	assign_expression *AssignExpression
-	minus_expression  *Expression
-	binary_expression *BinaryExpression
+	Type                     ExpressionType
+	line_number              int
+	boolean_value            bool
+	int_value                int
+	double_value             float32
+	string_value             string
+	identifier               string
+	assign_expression        *AssignExpression
+	minus_expression         *Expression
+	binary_expression        *BinaryExpression
+	function_call_expression FunctionCallExpression
+}
+
+type FunctionCallExpression struct {
+	identifier string
+	argument   *ArgumentList
 }
 
 type BinaryExpression struct {
@@ -140,8 +146,8 @@ const (
 )
 
 type StatementResult struct {
-	typ StatementResultType
-	u   interface{}
+	typ          StatementResultType
+	return_value Value
 }
 
 type Block struct {
@@ -182,7 +188,7 @@ type GlobalaVariableRef struct {
 
 type LocalEnvironment struct {
 	variable        *Variable
-	global_variable GlobalaVariableRef
+	global_variable *GlobalaVariableRef
 }
 
 type FunctionDefinitionType int
@@ -192,10 +198,21 @@ const (
 	NATIVE_FUNCTION_DEFINITION
 )
 
+type GrowbarFunction struct {
+	parameter *ParameterList
+	block     *Block
+}
+
+type GrowbarNativeFunc struct {
+	proc *NativeFuncProc
+}
+
 type FunctionDefinition struct {
-	name string
-	typ  FunctionDefinitionType
-	u    interface{}
+	name      string
+	typ       FunctionDefinitionType
+	growbar_f *GrowbarFunction
+	native_f  *GrowbarNativeFunc
+	next      *FunctionDefinition
 }
 
 type MessageFormat struct {

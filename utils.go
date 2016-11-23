@@ -75,3 +75,24 @@ func addLocalVariable(env *LocalEnvironment, identifier string, value *Value) {
 	newV.next = env.variable
 	env.variable = newV
 }
+
+func searchFunction(name string) *FunctionDefinition {
+	var pos *FunctionDefinition
+	ipt := getCurrentInterpreter()
+	pos = ipt.function_list
+	for {
+		if pos == nil {
+			break
+		}
+		if pos.name == name {
+			return pos
+		}
+		pos = pos.next
+	}
+	return pos
+}
+
+func allocLocalEnvironment() *LocalEnvironment {
+	ret := new(LocalEnvironment)
+	return ret
+}

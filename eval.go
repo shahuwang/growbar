@@ -29,3 +29,8 @@ func releaseIfString(v *Value) {
 		releaseString(v.string_value)
 	}
 }
+
+func evalNullExpression() Value {
+	v := Value{typ: CRB_NULL_VALUE}
+	return v
+}

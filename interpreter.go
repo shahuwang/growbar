@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
 )
 
@@ -171,7 +172,7 @@ func (ipt *Interpreter) evalStringExpression(str string) Value {
 	return v
 }
 
-func (ipt *Interpreter) literalToCrbString(str string) CRBString {
+func (ipt *Interpreter) literalToCrbString(str string) *CRBString {
 	ret := new(CRBString)
 	ret.str = str
 	ret.is_literal = true
@@ -191,7 +192,7 @@ func (ipt *Interpreter) evalExpression(env *LocalEnvironment, expr *Expression) 
 	case STRING_EXPRESSION:
 		v = ipt.evalStringExpression(expr.string_value)
 	case IDENTIFIER_EXPRESSION:
-		v = ipt.evalIdentifierExpression(evn, expr)
+		v = ipt.evalIdentifierExpression(env, expr)
 	case ASSIGN_EXPRESSION:
 		v = ipt.evalAssignExpression(env, expr.assign_expression.variable, expr.assign_expression.operand)
 	case ADD_EXPRESSION, SUB_EXPRESSION, MUL_EXPRESSION,
@@ -205,11 +206,105 @@ func (ipt *Interpreter) evalExpression(env *LocalEnvironment, expr *Expression) 
 		v = ipt.evalMinusExpression(env, expr.minus_expression)
 	case FUNCTION_CALL_EXPRESSION:
 		v = ipt.evalFunctionCallExpression(env, expr)
+	case NULL_EXPRESSION:
+		v = evalNullExpression()
 	default:
 		msg := fmt.Sprintf("bad case. type .. %d\n", expr.Type)
 		panic(msg)
 	}
 	return v
+}
+
+func (ipt *Interpreter) evalFunctionCallExpression(env *LocalEnvironment, expr *Expression) Value {
+	var value Value
+	var fn *FunctionDefinition
+	var identifier string = expr.function_call_expression.identifier
+	fn = searchFunction(identifier)
+	if fn == nil {
+		runtimeError(expr.line_number, FUNCTION_NOT__FOUNT_ERR)
+	}
+	switch fn.typ {
+	case CROWBAR_FUNCTION_DEFINITION:
+		value = ipt.callGrowbarFunction(env, expr, fn)
+	case NATIVE_FUNCTION_DEFINITION:
+		value = ipt.callNativeFunction(env, expr, fn.native_f.proc)
+	default:
+		msg := fmt.Sprintf("bad case ..%d\n", fn.typ)
+		panic(msg)
+	}
+	return value
+}
+
+func (ipt *Interpreter) callNativeFunction(env *LocalEnvironment, expr *Expression, proc *NativeFuncProc) Value {
+	var value Value
+	var arg_count int = 0
+	var arg_p *ArgumentList = expr.function_call_expression.argument
+	var args []Value = make([]Value, 0)
+	var i int = 0
+	for {
+		if arg_p == nil {
+			break
+		}
+		arg_count++
+		arg_p = arg_p.next
+	}
+	arg_p = expr.function_call_expression.argument
+	for {
+		if arg_p == nil {
+			break
+		}
+		args[i] = ipt.evalExpression(env, arg_p.expression)
+		i++
+		arg_p = arg_p.next
+	}
+	value = *proc(ipt, arg_count, args)
+	i = 0
+	for {
+		if i >= arg_count {
+			break
+		}
+		releaseIfString(&args[i])
+		i++
+	}
+	//TODO
+	// MEM_free(args)
+	return value
+}
+
+func (ipt *Interpreter) callGrowbarFunction(env *LocalEnvironment, expr *Expression, fn *FunctionDefinition) Value {
+	var value Value
+	var result StatementResult
+	var arg_p *ArgumentList = expr.function_call_expression.argument
+	var param_p *ParameterList = fn.growbar_f.parameter
+	var local_env *LocalEnvironment = allocLocalEnvironment()
+	for {
+		if arg_p == nil {
+			break
+		}
+		if param_p == nil {
+			runtimeError(expr.line_number, ARGUMENT_TOO_MANY_ERR)
+		}
+		var arg_val Value = ipt.evalExpression(env, arg_p.expression)
+		addLocalVariable(local_env, param_p.name, &arg_val)
+		arg_p = arg_p.next
+		param_p = param_p.next
+	}
+	if param_p != nil {
+		runtimeError(expr.line_number, ARGUMENT_TOO_FEW_ERR)
+	}
+	result = ipt.ExecuteStatementList(local_env, fn.growbar_f.block.statement_list)
+	if result.typ == RETURN_STATEMENT_RESULT {
+		value = result.return_value
+	} else {
+		value.typ = CRB_NULL_VALUE
+	}
+	ipt.disposeLocalEnvironment(env)
+	return value
+}
+
+func (ipt *Interpreter) disposeLocalEnvironment(env *LocalEnvironment) {
+	//TODO
+	//释放内存
 }
 
 func (ipt *Interpreter) evalLogicalAndOrExpression(env *LocalEnvironment, operator ExpressionType, left *Expression, right *Expression) Value {
@@ -247,7 +342,7 @@ func (ipt *Interpreter) evalAssignExpression(env *LocalEnvironment, identifier s
 	var v Value = ipt.evalExpression(env, expr)
 	var left *Variable = searchLocalVariable(env, identifier)
 	if left == nil {
-		left = searchGlobalVariableFromEnv(env)
+		left = ipt.searchGlobalVariableFromEnv(env, identifier)
 	}
 	if left != nil {
 		releaseIfString(&left.value)
@@ -264,7 +359,25 @@ func (ipt *Interpreter) evalAssignExpression(env *LocalEnvironment, identifier s
 	return v
 }
 
-func (ipt *Interpreter) searchGlobalVariableFromEnv(identifier string) Variable {
+func (ipt *Interpreter) searchGlobalVariableFromEnv(env *LocalEnvironment, identifier string) *Variable {
+	pos := new(GlobalaVariableRef)
+	if env == nil {
+		return ipt.searchGlobalVariable(identifier)
+	}
+	pos = env.global_variable
+	for {
+		if pos == nil {
+			break
+		}
+		if pos.variable.name == identifier {
+			return pos.variable
+		}
+		pos = pos.next
+	}
+	return nil
+}
+
+func (ipt *Interpreter) searchGlobalVariable(identifier string) *Variable {
 	pos := ipt.variable
 	for {
 		if pos == nil || pos.name == identifier {
@@ -460,7 +573,7 @@ func (ipt *Interpreter) evalBinaryDouble(
 		result.double_value = left / right
 		result.typ = CRB_DOUBLE_VALUE
 	case MOD_EXPRESSION:
-		result.double_value = left % right
+		result.double_value = float32(math.Mod(float64(left), float64(right)))
 		result.typ = CRB_DOUBLE_VALUE
 	case EQ_EXPRESSION:
 		result.boolean_value = (left == right)
