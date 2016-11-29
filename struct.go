@@ -204,7 +204,7 @@ type GrowbarFunction struct {
 }
 
 type GrowbarNativeFunc struct {
-	proc *NativeFuncProc
+	proc NativeFuncProc
 }
 
 type FunctionDefinition struct {
@@ -225,7 +225,7 @@ type CrowbarFunc struct {
 }
 
 type NativeFunc struct {
-	proc *NativeFuncProc
+	proc NativeFuncProc
 }
 
-type NativeFuncProc func(interpreter *Interpreter, arg_count int, args *Value) Value
+type NativeFuncProc func(interpreter *Interpreter, arg_count int, args []Value) Value

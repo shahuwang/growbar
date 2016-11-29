@@ -235,7 +235,7 @@ func (ipt *Interpreter) evalFunctionCallExpression(env *LocalEnvironment, expr *
 	return value
 }
 
-func (ipt *Interpreter) callNativeFunction(env *LocalEnvironment, expr *Expression, proc *NativeFuncProc) Value {
+func (ipt *Interpreter) callNativeFunction(env *LocalEnvironment, expr *Expression, proc NativeFuncProc) Value {
 	var value Value
 	var arg_count int = 0
 	var arg_p *ArgumentList = expr.function_call_expression.argument
@@ -257,7 +257,7 @@ func (ipt *Interpreter) callNativeFunction(env *LocalEnvironment, expr *Expressi
 		i++
 		arg_p = arg_p.next
 	}
-	value = *proc(ipt, arg_count, args)
+	value = proc(ipt, arg_count, args)
 	i = 0
 	for {
 		if i >= arg_count {
@@ -554,6 +554,7 @@ func (ipt *Interpreter) evalBinaryInt(
 		result.typ = CRB_BOOLEAN_VALUE
 	default:
 		msg := fmt.Sprintf("bad case ... %d", operator)
+		panic(msg)
 	}
 }
 
@@ -595,6 +596,7 @@ func (ipt *Interpreter) evalBinaryDouble(
 		result.typ = CRB_BOOLEAN_VALUE
 	default:
 		msg := fmt.Sprintf("bad case ... %d", operator)
+		panic(msg)
 	}
 }
 
@@ -606,7 +608,7 @@ func (ipt *Interpreter) evalBinaryBoolean(operator ExpressionType, left bool, ri
 		result = (left != right)
 	} else {
 		op_str := getOperatorString(operator)
-		runtimeError(line_number, NOT_BOOLEAN_OPERATOR_ERR)
+		runtimeError(line_number, NOT_BOOLEAN_OPERATOR_ERR, op_str)
 	}
 	return result
 }
@@ -619,7 +621,7 @@ func (ipt *Interpreter) evalBinaryNull(operator ExpressionType, lval *Value, rva
 		result = !(lval.typ == CRB_NULL_VALUE && rval.typ == CRB_NULL_VALUE)
 	} else {
 		op_str := getOperatorString(operator)
-		runtimeError(line_number, NOT_NULL_OPERATOR_ERR)
+		runtimeError(line_number, NOT_NULL_OPERATOR_ERR, op_str)
 	}
 	return result
 }
