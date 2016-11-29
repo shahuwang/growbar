@@ -37,24 +37,27 @@ func (ipt *Interpreter) Compile(fp *os.File) {
 }
 
 func (ipt *Interpreter) Interpret() {
-
+	ipt.AddStdFp()
+	ipt.ExecuteStatementList(nil, ipt.statement_list)
 }
 
 func (ipt *Interpreter) AddStdFp() {
+	v := newFp(os.Stdin)
+	ipt.AddGlobalVariable("STDIN", v)
+	v = newFp(os.Stdout)
+	ipt.AddGlobalVariable("STDOUT", v)
+	v = newFp(os.Stderr)
+	ipt.AddGlobalVariable("STDERR", v)
+}
+
+func newFp(f *os.File) *Value {
 	v := new(Value)
 	p := NativePointer{}
 	p.info = &NativePointerInfo{name: NATIVE_LIB_NAME}
-	p.pointer = os.Stdin
+	p.pointer = f
 	v.native_pointer = p
 	v.typ = CRB_NATIVE_POINTER_VALUE
-	ipt.AddGlobalVariable("STDIN", v)
-	p.pointer = os.Stdout
-	v.native_pointer = p
-	v.native_pointer = p
-	ipt.AddGlobalVariable("STDOUT", v)
-	p.pointer = os.Stderr
-	v.native_pointer = p
-	ipt.AddGlobalVariable("STDERR", v)
+	return v
 }
 
 func (ipt *Interpreter) AddGlobalVariable(identifier string, value *Value) {
@@ -62,7 +65,7 @@ func (ipt *Interpreter) AddGlobalVariable(identifier string, value *Value) {
 	val.name = identifier
 	val.value = *value
 	val.next = ipt.variable
-	ipt.variable.next = val
+	ipt.variable = val
 }
 
 func (ipt *Interpreter) ExecuteStatementList(env *LocalEnvironment, stlist *StatementList) StatementResult {
@@ -73,9 +76,11 @@ func (ipt *Interpreter) ExecuteStatementList(env *LocalEnvironment, stlist *Stat
 			break
 		}
 		result = ipt.ExecuteStatement(env, pos.statement)
+		PrintResult(&result)
 		if result.typ != NORMAL_STATEMENT_RESULT {
 			return result
 		}
+		pos = pos.next
 	}
 	return result
 }
@@ -111,11 +116,11 @@ func (ipt *Interpreter) ExecuteStatement(env *LocalEnvironment, statement *State
 
 func (ipt *Interpreter) ExecuteExpressionStatement(env *LocalEnvironment, statement *Statement) StatementResult {
 	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
-	// v := ipt.EvalExpression(env, &statement.u.(Expression))
-	// if v.typ == CRB_STRING_VALUE {
-	// 	// crb_release_string(v.u.string_value)
-	// 	// 这里不知道是否需要垃圾回收
-	// }
+	v := ipt.evalExpression(env, statement.expresion_s)
+	if v.typ == CRB_STRING_VALUE {
+		releaseString(v.string_value)
+	}
+	result.return_value = v
 	return result
 }
 
@@ -641,6 +646,8 @@ func (ipt *Interpreter) allocCrbString(str string, is_literal bool) *CRBString {
 }
 
 func (ipt *Interpreter) chainString(left *CRBString, right *CRBString) *CRBString {
-	// TODO
-	return new(CRBString)
+	ret := ipt.createCrowbarString(left.str + right.str)
+	releaseString(left)
+	releaseString(right)
+	return ret
 }

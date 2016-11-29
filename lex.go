@@ -433,7 +433,12 @@ LOOP:
 			}
 		case r == '"':
 			g.Next()
+			// 去掉冒号
+			g.Start++
+			g.Pos--
 			exp.string_value = g.hit()
+			g.Pos++
+			g.Start = g.Pos
 			return STRING_LITERAL
 		case r == '\r' || r == '\n':
 			g.Next()
