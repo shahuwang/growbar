@@ -105,7 +105,7 @@ func PrintResult(result *StatementResult) {
 	case CRB_DOUBLE_VALUE:
 		fmt.Printf("%f\n", v.double_value)
 	case CRB_BOOLEAN_VALUE:
-		fmt.Println("%t\n", v.boolean_value)
+		fmt.Printf("%t\n", v.boolean_value)
 	case CRB_STRING_VALUE:
 		fmt.Println(v.string_value.str)
 	default:

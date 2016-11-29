@@ -12,11 +12,6 @@ func evalDoubleExpression(v float32) Value {
 	return value
 }
 
-func evalCompareString(operator ExpressionType, left *Value, right *Value, line_number int) bool {
-	//TODO
-	return true
-}
-
 func evalBooleanExpression(boolean_value bool) Value {
 	var v Value
 	v.typ = CRB_BOOLEAN_VALUE

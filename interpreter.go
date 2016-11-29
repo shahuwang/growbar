@@ -483,7 +483,7 @@ func (ipt *Interpreter) evalBinaryExpression(
 		result.string_value = ipt.chainString(lval.string_value, right_str)
 	} else if lval.typ == CRB_STRING_VALUE && rval.typ == CRB_STRING_VALUE {
 		result.typ = CRB_BOOLEAN_VALUE
-		result.boolean_value = evalCompareString(operator, &lval, &rval, left.line_number)
+		result.boolean_value = ipt.evalCompareString(operator, &lval, &rval, left.line_number)
 	} else if lval.typ == CRB_NULL_VALUE || rval.typ == CRB_NULL_VALUE {
 		result.typ = CRB_BOOLEAN_VALUE
 		result.boolean_value = ipt.evalBinaryNull(operator, &lval, &rval, left.line_number)
