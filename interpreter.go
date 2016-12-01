@@ -388,6 +388,7 @@ func (ipt *Interpreter) searchGlobalVariable(identifier string) *Variable {
 		if pos == nil || pos.name == identifier {
 			break
 		}
+		pos = pos.next
 	}
 	return pos
 }

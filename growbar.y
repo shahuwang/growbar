@@ -1,7 +1,7 @@
 %{
 package main
 import(
-    /* "fmt" */
+    "fmt"
 )
 %}
 %union {
@@ -92,6 +92,7 @@ expression
     : logical_or_expression
     | IDENTIFIER ASSIGN expression
     {
+        fmt.Printf("identifier==============%s\n", $1)
         $$ = createAssignExpression($1, $3)
     }
 logical_or_expression
