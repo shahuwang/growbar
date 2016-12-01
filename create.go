@@ -110,12 +110,10 @@ func allocStatement(typ StatementType) *Statement {
 }
 
 func createContinueStatement() *Statement {
-	//TODO
 	return allocStatement(CONTINUE_STATEMENT)
 }
 
 func createBreakStatement() *Statement {
-	// TODO
 	return allocStatement(BREAK_STATEMENT)
 }
 
@@ -153,48 +151,79 @@ func chainStatementList(sl *StatementList, st *Statement) *StatementList {
 }
 
 func createForStatement(init *Expression, cond *Expression, post *Expression, block *Block) *Statement {
-	// TODO
-	return allocStatement(FOR_STATEMENT)
+	st := allocStatement(FOR_STATEMENT)
+	st.for_s.init = init
+	st.for_s.condition = cond
+	st.for_s.post = post
+	st.for_s.block = block
+	return st
 }
 
 func createReturnStatement(expression *Expression) *Statement {
-	// TODO
-	return allocStatement(RETURN_STATEMENT)
+	st := allocStatement(RETURN_STATEMENT)
+	st.return_s.return_value = expression
+	return st
 }
 
 func createGlobalStatement(identifier_list *IdentifierList) *Statement {
-	// TODO
-	return allocStatement(GLOBAL_STATEMENT)
+	st := allocStatement(GLOBAL_STATEMENT)
+	st.global_s.identifier_list = identifier_list
+	return st
 }
 
 func createIfStatement(cond *Expression, then *Block, elsiflist *Elsif, elseBlock *Block) *Statement {
-	// TODO
-	return allocStatement(IF_STATEMENT)
+	st := allocStatement(IF_STATEMENT)
+	st.if_s.condition = cond
+	st.if_s.then_block = then
+	st.if_s.elsif_list = elsiflist
+	st.if_s.else_block = elseBlock
+	return st
 }
 
 func createWhileStatement(cond *Expression, block *Block) *Statement {
-	//TODO
-	return allocStatement(WHILE_STATEMENT)
+	st := allocStatement(WHILE_STATEMENT)
+	st.while_s.condition = cond
+	st.while_s.block = block
+	return st
 }
 
 func createGlobalIdentifier(identifier string) *IdentifierList {
-	// TODO
-	return new(IdentifierList)
+	i_list := new(IdentifierList)
+	i_list.name = identifier
+	i_list.next = nil
+	return i_list
 }
 
 func chainIdentifier(il *IdentifierList, identifier string) *IdentifierList {
-	// TODO
-	return new(IdentifierList)
+	pos := il
+	for {
+		if pos == nil {
+			break
+		}
+		pos = pos.next
+	}
+	pos.next = createGlobalIdentifier(identifier)
+	return il
 }
 
 func chainElsifList(list *Elsif, add *Elsif) *Elsif {
-	// TODO
-	return new(Elsif)
+	pos := list
+	for {
+		if pos == nil {
+			break
+		}
+		pos = pos.next
+	}
+	pos.next = add
+	return list
 }
 
 func createElsif(expr *Expression, block *Block) *Elsif {
-	// TODO
-	return new(Elsif)
+	ei := new(Elsif)
+	ei.condition = expr
+	ei.block = block
+	ei.next = nil
+	return ei
 }
 
 func createArgumentList(expr *Expression) *ArgumentList {
@@ -236,10 +265,22 @@ func chainParameter(list *ParameterList, identifier string) *ParameterList {
 }
 
 func createFunctionCallExpression(funcName string, argument *ArgumentList) *Expression {
-	// TODO
-	return new(Expression)
+	exp := allocExpression(FUNCTION_CALL_EXPRESSION)
+	exp.function_call_expression.identifier = funcName
+	exp.function_call_expression.argument = argument
+	return exp
 }
 
 func functionDefine(identifier string, pl *ParameterList, block *Block) {
-	// TODO
+	ipt := getCurrentInterpreter()
+	if searchFunction(identifier) != nil {
+		compileError(ipt.current_line_number, FUNCTION_MULTIPLE_DEFINE_ERR, identifier)
+	}
+	f := new(FunctionDefinition)
+	f.name = identifier
+	f.typ = CROWBAR_FUNCTION_DEFINITION
+	f.growbar_f.parameter = pl
+	f.growbar_f.block = block
+	f.next = ipt.function_list
+	ipt.function_list = f
 }

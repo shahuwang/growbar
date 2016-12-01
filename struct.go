@@ -104,6 +104,11 @@ type Statement struct {
 	typ             StatementType
 	line_number     int
 	expresion_s     *Expression
+	global_s        GlobalStatement
+	if_s            IfStatement
+	while_s         WhileStatement
+	for_s           ForStatement
+	return_s        ReturnStatement
 	identifier_list *IdentifierList
 }
 
@@ -167,6 +172,29 @@ type IdentifierList struct {
 
 type GlobalStatement struct {
 	identifier_list *IdentifierList
+}
+
+type IfStatement struct {
+	condition  *Expression
+	then_block *Block
+	elsif_list *Elsif
+	else_block *Block
+}
+
+type WhileStatement struct {
+	condition *Expression
+	block     *Block
+}
+
+type ForStatement struct {
+	init      *Expression
+	condition *Expression
+	post      *Expression
+	block     *Block
+}
+
+type ReturnStatement struct {
+	return_value *Expression
 }
 
 type Variable struct {
