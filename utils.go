@@ -108,6 +108,8 @@ func PrintResult(result *StatementResult) {
 		fmt.Printf("%t\n", v.boolean_value)
 	case CRB_STRING_VALUE:
 		fmt.Println(v.string_value.str)
+	case CRB_NULL_VALUE:
+		fmt.Println("nil")
 	default:
 		fmt.Printf("%+v", v)
 	}

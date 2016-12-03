@@ -38,6 +38,7 @@ func (ipt *Interpreter) Compile(fp *os.File) {
 
 func (ipt *Interpreter) Interpret() {
 	ipt.AddStdFp()
+	ipt.AddNativeFunctions()
 	ipt.ExecuteStatementList(nil, ipt.statement_list)
 }
 
@@ -68,6 +69,21 @@ func (ipt *Interpreter) AddGlobalVariable(identifier string, value *Value) {
 	ipt.variable = val
 }
 
+func (ipt *Interpreter) AddNativeFunctions() {
+	//TODO
+	ipt.addNativeFunction("print", nvPrintProc)
+}
+
+func (ipt *Interpreter) addNativeFunction(name string, proc NativeFuncProc) {
+	fd := new(FunctionDefinition)
+	fd.name = name
+	fd.typ = NATIVE_FUNCTION_DEFINITION
+	fd.native_f = new(GrowbarNativeFunc)
+	fd.native_f.proc = proc
+	fd.next = ipt.function_list
+	ipt.function_list = fd
+}
+
 func (ipt *Interpreter) ExecuteStatementList(env *LocalEnvironment, stlist *StatementList) StatementResult {
 	var pos *StatementList = stlist
 	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
@@ -76,7 +92,7 @@ func (ipt *Interpreter) ExecuteStatementList(env *LocalEnvironment, stlist *Stat
 			break
 		}
 		result = ipt.ExecuteStatement(env, pos.statement)
-		PrintResult(&result)
+		// PrintResult(&result)
 		if result.typ != NORMAL_STATEMENT_RESULT {
 			return result
 		}
@@ -125,44 +141,65 @@ func (ipt *Interpreter) ExecuteExpressionStatement(env *LocalEnvironment, statem
 }
 
 func (ipt *Interpreter) ExecuteGlobalStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	var pos *IdentifierList
 	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
 	if env == nil {
 		runtimeError(statement.line_number, GLOBAL_STATEMENT_IN_TOPLEVEL_ERR)
 	}
-	pos = statement.identifier_list
-	for {
-		if pos == nil {
-			break
+	for pos := statement.global_s.identifier_list; pos != nil; pos = pos.next {
+		var variable *Variable
+		var new_ref *GlobalaVariableRef
+		for ref_pos := env.global_variable; ref_pos != nil; ref_pos = ref_pos.next {
+			if ref_pos.variable.name == pos.name {
+				goto NEXT_IDENTIFIER
+			}
 		}
-
+		variable = ipt.searchGlobalVariable(pos.name)
+		if variable == nil {
+			runtimeError(statement.line_number, GLOBAL_VARIABLE_NOT_FOUND_ERR, pos.name)
+		}
+		new_ref = new(GlobalaVariableRef)
+		new_ref.variable = variable
+		new_ref.next = env.global_variable
+		env.global_variable = new_ref
+	NEXT_IDENTIFIER:
 	}
 	return result
 }
 
 func (ipt *Interpreter) ExecuteIfStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	//TODO
 	return StatementResult{}
 }
 
 func (ipt *Interpreter) ExecuteWhileStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	//TODO
 	return StatementResult{}
 }
 
 func (ipt *Interpreter) ExecuteForStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	//TODO
 	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
 	// var cond Value
 	return result
 }
 
 func (ipt *Interpreter) ExecuteReturnStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	return StatementResult{typ: RETURN_STATEMENT_RESULT}
+	result := StatementResult{typ: RETURN_STATEMENT_RESULT}
+	if statement.return_s.return_value != nil {
+		result.return_value = ipt.evalExpression(env, statement.return_s.return_value)
+	} else {
+		result.return_value.typ = CRB_NULL_VALUE
+	}
+	return result
 }
 
 func (ipt *Interpreter) ExecuteContinueStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	//TODO
 	return StatementResult{typ: CONTINUE_STATEMENT_RESULT}
 }
 
 func (ipt *Interpreter) ExecuteBreakStatement(env *LocalEnvironment, statement *Statement) StatementResult {
+	//TODO
 	return StatementResult{typ: BREAK_STATEMENT_RESULT}
 }
 
@@ -244,7 +281,6 @@ func (ipt *Interpreter) callNativeFunction(env *LocalEnvironment, expr *Expressi
 	var value Value
 	var arg_count int = 0
 	var arg_p *ArgumentList = expr.function_call_expression.argument
-	var args []Value = make([]Value, 0)
 	var i int = 0
 	for {
 		if arg_p == nil {
@@ -254,6 +290,7 @@ func (ipt *Interpreter) callNativeFunction(env *LocalEnvironment, expr *Expressi
 		arg_p = arg_p.next
 	}
 	arg_p = expr.function_call_expression.argument
+	var args []Value = make([]Value, arg_count)
 	for {
 		if arg_p == nil {
 			break

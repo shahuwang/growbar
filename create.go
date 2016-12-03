@@ -279,6 +279,7 @@ func functionDefine(identifier string, pl *ParameterList, block *Block) {
 	f := new(FunctionDefinition)
 	f.name = identifier
 	f.typ = CROWBAR_FUNCTION_DEFINITION
+	f.growbar_f = new(GrowbarFunction)
 	f.growbar_f.parameter = pl
 	f.growbar_f.block = block
 	f.next = ipt.function_list
