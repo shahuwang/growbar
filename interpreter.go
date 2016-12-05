@@ -73,6 +73,7 @@ func (ipt *Interpreter) AddNativeFunctions() {
 	//TODO
 	ipt.addNativeFunction("print", nvPrintProc)
 	ipt.addNativeFunction("fopen", nvFopenProc)
+	ipt.addNativeFunction("fget", nvFgetsProc)
 }
 
 func (ipt *Interpreter) addNativeFunction(name string, proc NativeFuncProc) {

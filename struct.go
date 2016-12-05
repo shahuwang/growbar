@@ -4,6 +4,8 @@ import (
 	"reflect"
 )
 
+const LINE_BUF_SIZE = 1024
+
 type ExpressionType int
 
 const (

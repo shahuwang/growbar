@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	// "io/ioutil"
+	"bufio"
+	"io"
 	"os"
 )
 
@@ -81,4 +84,42 @@ func nvFopenProc(ipt *Interpreter, arg_count int, args []Value) Value {
 		value.native_pointer.pointer = f
 	}
 	return value
+}
+
+func nvFgetsProc(ipt *Interpreter, arg_count int, args []Value) Value {
+	if arg_count < 1 {
+		runtimeError(ipt.current_line_number, ARGUMENT_TOO_FEW_ERR)
+	} else if arg_count > 1 {
+		runtimeError(ipt.current_line_number, ARGUMENT_TOO_MANY_ERR)
+	}
+	v := args[0]
+	if v.typ != CRB_NATIVE_POINTER_VALUE || !checkNativePointer(&v) {
+		runtimeError(ipt.current_line_number, FGETS_ARGUMENT_TYPE_ERR)
+	}
+	fp := v.native_pointer.pointer.(*os.File)
+	reader := bufio.NewReaderSize(fp, LINE_BUF_SIZE)
+	result := make([]byte, 0)
+	buf := make([]byte, LINE_BUF_SIZE)
+	for {
+		n, err := reader.Read(buf)
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			panic(err)
+		}
+		result = append(result, buf[:n]...)
+	}
+	var value Value
+	if len(result) > 0 {
+		value.typ = CRB_STRING_VALUE
+		value.string_value = ipt.createCrowbarString(string(result))
+	} else {
+		value.typ = CRB_NULL_VALUE
+	}
+	return value
+}
+
+func checkNativePointer(value *Value) bool {
+	return value.native_pointer.info == &st_native_lib_info
 }
