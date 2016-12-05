@@ -21,6 +21,7 @@ var runtimeErrorMessageFormat []MessageFormat = []MessageFormat{
 	MessageFormat{"双目操作符(%s)的操作数类型不正确"},
 	MessageFormat{"(%s)操作符不能用于boolean型"},
 	MessageFormat{"请为fopen()函数传入文件的路径和打开方式"},
+	MessageFormat{"请为fclose()函数传入文件指针"},
 	MessageFormat{"请为fgets()函数传入文件指针"},
 	MessageFormat{"请为fputs()函数传入文件指针和字符串"},
 	MessageFormat{"null只能用于运算符 == 和 != (不能进行 %s 操作)"},

@@ -70,10 +70,11 @@ func (ipt *Interpreter) AddGlobalVariable(identifier string, value *Value) {
 }
 
 func (ipt *Interpreter) AddNativeFunctions() {
-	//TODO
 	ipt.addNativeFunction("print", nvPrintProc)
 	ipt.addNativeFunction("fopen", nvFopenProc)
 	ipt.addNativeFunction("fget", nvFgetsProc)
+	ipt.addNativeFunction("fput", nvFputProc)
+	ipt.addNativeFunction("fclose", nvFclose)
 }
 
 func (ipt *Interpreter) addNativeFunction(name string, proc NativeFuncProc) {
