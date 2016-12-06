@@ -56,9 +56,9 @@ func nvFopenProc(ipt *Interpreter, arg_count int, args []Value) Value {
 	var value Value
 	switch v2.string_value.str {
 	case "r":
-		mode = os.O_RDONLY | os.O_CREATE | os.O_TRUNC
+		mode = os.O_RDONLY | os.O_CREATE
 	case "r+", "rb+":
-		mode = os.O_RDONLY | os.O_WRONLY | os.O_CREATE | os.O_TRUNC
+		mode = os.O_RDONLY | os.O_WRONLY | os.O_CREATE
 	case "w", "wb":
 		mode = os.O_WRONLY | os.O_CREATE | os.O_TRUNC
 	case "w+", "wb+":
@@ -126,7 +126,10 @@ func nvFputProc(ipt *Interpreter, arg_count int, args []Value) Value {
 		runtimeError(ipt.current_line_number, FPUTS_ARGUMENT_TYPE_ERR)
 	}
 	fp := v2.native_pointer.pointer.(*os.File)
-	fp.WriteString(v.string_value.str)
+	_, err := fp.WriteString(v.string_value.str)
+	if err != nil {
+		panic(err)
+	}
 	// writer := bufio.NewWriter(fp)
 	// _, err := writer.WriteString(v.string_value.str)
 	// if err != nil {
