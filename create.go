@@ -209,7 +209,7 @@ func chainIdentifier(il *IdentifierList, identifier string) *IdentifierList {
 func chainElsifList(list *Elsif, add *Elsif) *Elsif {
 	pos := list
 	for {
-		if pos == nil {
+		if pos.next == nil {
 			break
 		}
 		pos = pos.next

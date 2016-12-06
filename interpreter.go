@@ -170,19 +170,94 @@ func (ipt *Interpreter) ExecuteGlobalStatement(env *LocalEnvironment, statement 
 }
 
 func (ipt *Interpreter) ExecuteIfStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	//TODO
-	return StatementResult{}
+	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
+	cond := ipt.evalExpression(env, statement.if_s.condition)
+	if cond.typ != CRB_BOOLEAN_VALUE {
+		runtimeError(statement.if_s.condition.line_number, NOT_BOOLEAN_TYPE_ERR)
+	}
+	if cond.boolean_value {
+		result = ipt.ExecuteStatementList(env, statement.if_s.then_block.statement_list)
+	} else {
+		var elsif_executed bool
+		result = ipt.ExecuteElsif(env, statement.if_s.elsif_list, &elsif_executed)
+		if result.typ != NORMAL_STATEMENT_RESULT {
+			goto FUNC_END
+		}
+		if !elsif_executed && statement.if_s.else_block != nil {
+			result = ipt.ExecuteStatementList(env, statement.if_s.else_block.statement_list)
+		}
+	}
+FUNC_END:
+	return result
+}
+
+func (ipt *Interpreter) ExecuteElsif(env *LocalEnvironment, elsif_list *Elsif, executed *bool) StatementResult {
+	*executed = false
+	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
+	for pos := elsif_list; pos != nil; pos = pos.next {
+		cond := ipt.evalExpression(env, pos.condition)
+		if cond.typ != CRB_BOOLEAN_VALUE {
+			runtimeError(pos.condition.line_number, NOT_BOOLEAN_TYPE_ERR)
+		}
+		if cond.boolean_value {
+			result = ipt.ExecuteStatementList(env, pos.block.statement_list)
+			*executed = true
+			if result.typ != NORMAL_STATEMENT_RESULT {
+				goto FUNC_END
+			}
+		}
+	}
+FUNC_END:
+	return result
 }
 
 func (ipt *Interpreter) ExecuteWhileStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	//TODO
-	return StatementResult{}
+	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
+	for {
+		cond := ipt.evalExpression(env, statement.while_s.condition)
+		if cond.typ != CRB_BOOLEAN_VALUE {
+			runtimeError(statement.while_s.condition.line_number, NOT_BOOLEAN_TYPE_ERR)
+		}
+		if !cond.boolean_value {
+			break
+		}
+		result = ipt.ExecuteStatementList(env, statement.while_s.block.statement_list)
+		if result.typ == RETURN_STATEMENT_RESULT {
+			break
+		} else if result.typ == BREAK_STATEMENT_RESULT {
+			result.typ = NORMAL_STATEMENT_RESULT
+			break
+		}
+	}
+	return result
 }
 
 func (ipt *Interpreter) ExecuteForStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	//TODO
 	result := StatementResult{typ: NORMAL_STATEMENT_RESULT}
-	// var cond Value
+	if statement.for_s.init != nil {
+		ipt.evalExpression(env, statement.for_s.init)
+	}
+	for {
+		if statement.for_s.condition != nil {
+			cond := ipt.evalExpression(env, statement.for_s.condition)
+			if cond.typ != CRB_BOOLEAN_VALUE {
+				runtimeError(statement.for_s.condition.line_number, NOT_BOOLEAN_TYPE_ERR)
+			}
+			if !cond.boolean_value {
+				break
+			}
+		}
+		result = ipt.ExecuteStatementList(env, statement.for_s.block.statement_list)
+		if result.typ == RETURN_STATEMENT_RESULT {
+			break
+		} else if result.typ == BREAK_STATEMENT_RESULT {
+			result.typ = NORMAL_STATEMENT_RESULT
+			break
+		}
+		if statement.for_s.post != nil {
+			ipt.evalExpression(env, statement.for_s.post)
+		}
+	}
 	return result
 }
 
@@ -197,12 +272,10 @@ func (ipt *Interpreter) ExecuteReturnStatement(env *LocalEnvironment, statement 
 }
 
 func (ipt *Interpreter) ExecuteContinueStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	//TODO
 	return StatementResult{typ: CONTINUE_STATEMENT_RESULT}
 }
 
 func (ipt *Interpreter) ExecuteBreakStatement(env *LocalEnvironment, statement *Statement) StatementResult {
-	//TODO
 	return StatementResult{typ: BREAK_STATEMENT_RESULT}
 }
 
