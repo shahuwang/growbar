@@ -130,12 +130,6 @@ func nvFputProc(ipt *Interpreter, arg_count int, args []Value) Value {
 	if err != nil {
 		panic(err)
 	}
-	// writer := bufio.NewWriter(fp)
-	// _, err := writer.WriteString(v.string_value.str)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// writer.Flush()
 	return Value{typ: CRB_NULL_VALUE}
 }
 
