@@ -76,6 +76,6 @@ fp = fopen("README.md", "r");
 ret = fget(fp);
 print(ret);
 fclose(fp);
-fp = fopen("README.md", "w");
+fp = fopen("README.md", "wt+");
 fput("hello world", fp);
 fclose(fp);

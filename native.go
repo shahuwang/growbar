@@ -1,10 +1,10 @@
 package main
 
 import (
-	"fmt"
-	// "io/ioutil"
 	"bufio"
+	"fmt"
 	"io"
+	// "io/ioutil"
 	"os"
 )
 
@@ -56,23 +56,17 @@ func nvFopenProc(ipt *Interpreter, arg_count int, args []Value) Value {
 	var value Value
 	switch v2.string_value.str {
 	case "r":
-		mode = os.O_RDONLY
+		mode = os.O_RDONLY | os.O_CREATE | os.O_TRUNC
 	case "r+", "rb+":
-		mode = os.O_RDONLY | os.O_WRONLY
-	case "rt+":
-		mode = os.O_RDONLY | os.O_TRUNC
+		mode = os.O_RDONLY | os.O_WRONLY | os.O_CREATE | os.O_TRUNC
 	case "w", "wb":
-		mode = os.O_WRONLY | os.O_CREATE
+		mode = os.O_WRONLY | os.O_CREATE | os.O_TRUNC
 	case "w+", "wb+":
-		mode = os.O_WRONLY | os.O_RDONLY | os.O_CREATE
-	case "wt+":
-		mode = os.O_WRONLY | os.O_RDONLY | os.O_TRUNC
+		mode = os.O_WRONLY | os.O_RDONLY | os.O_CREATE | os.O_TRUNC
 	case "a":
 		mode = os.O_APPEND | os.O_CREATE
 	case "a+", "ab+":
 		mode = os.O_APPEND | os.O_RDONLY | os.O_CREATE
-	case "at+":
-		mode = os.O_APPEND | os.O_RDONLY | os.O_TRUNC
 	}
 	f, err := os.OpenFile(v.string_value.str, mode, 0660)
 	if err != nil {
@@ -129,16 +123,16 @@ func nvFputProc(ipt *Interpreter, arg_count int, args []Value) Value {
 	v := args[0]
 	v2 := args[1]
 	if v.typ != CRB_STRING_VALUE || (v2.typ != CRB_NATIVE_POINTER_VALUE || !checkNativePointer(&v2)) {
-		fmt.Println("============")
 		runtimeError(ipt.current_line_number, FPUTS_ARGUMENT_TYPE_ERR)
 	}
 	fp := v2.native_pointer.pointer.(*os.File)
-	writer := bufio.NewWriter(fp)
-	_, err := writer.WriteString(v.string_value.str)
-	if err != nil {
-		panic(err)
-	}
-	writer.Flush()
+	fp.WriteString(v.string_value.str)
+	// writer := bufio.NewWriter(fp)
+	// _, err := writer.WriteString(v.string_value.str)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// writer.Flush()
 	return Value{typ: CRB_NULL_VALUE}
 }
 
